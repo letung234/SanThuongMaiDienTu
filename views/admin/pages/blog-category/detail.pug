@@ -1,0 +1,49 @@
+extends ../../layouts/default.pug
+
+block main
+  .max-w-4xl.mx-auto.p-6
+    .bg-white.rounded-lg.shadow.p-6
+      h1.text-2xl.font-bold.mb-4.text-gray-700 Chi tiết Chuyên mục
+      
+      if(parentCategory.title)
+        h2.text-xl.font-semibold.mb-4.text-gray-600.bg-gray-100.p-3.rounded
+          | Danh mục cha: #{parentCategory.title}
+      
+      .space-y-4
+        if(record.title)
+          .border-b.pb-4
+            label.text-sm.font-medium.text-gray-500 Tên danh mục
+            p.text-lg.text-gray-900.mt-1 #{record.title}
+        
+        if(record.thumbnail)
+          .border-b.pb-4
+            label.text-sm.font-medium.text-gray-500 Ảnh đại diện
+            img.mt-2.rounded-lg.shadow-sm(src=record.thumbnail class="w-32 h-auto")
+        
+        if(record.status)
+          .border-b.pb-4
+            label.text-sm.font-medium.text-gray-500 Trạng thái
+            .mt-1
+              if(record.status === "active")
+                span.inline-flex.items-center.px-3.py-1.rounded-full.text-sm.font-medium.bg-green-100.text-green-800 Hoạt động
+              else
+                span.inline-flex.items-center.px-3.py-1.rounded-full.text-sm.font-medium.bg-red-100.text-red-800 Dừng hoạt động
+        
+        if(record.position)
+          .border-b.pb-4
+            label.text-sm.font-medium.text-gray-500 Vị trí
+            p.text-lg.text-gray-900.mt-1 #{record.position}
+        
+        if(record.description)
+          .border-b.pb-4
+            label.text-sm.font-medium.text-gray-500 Mô tả
+            .prose.text-gray-700.mt-1 !{record.description}
+      
+      if(role.permission.includes("blog-category_edit"))
+        .mt-6
+          a(
+            class=" inline-flex items-center justify-center bg-yellow-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+            href=`${prefixAdmin}/blog-category/edit/${record.id}`
+          ) Chỉnh sửa
+
+  script(src="/admin/js/product.js")

@@ -1,0 +1,41 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+   .container.mx-auto.my-6.px-4
+      .mb-6
+         +box-head("Thông tin tài khoản")
+      
+      .bg-white.shadow-md.rounded-lg.mt-2
+         .flex.flex-col.items-center
+            if (user.avatar)
+               img(src=user.avatar width="150" class="w-36 h-36 rounded-full mb-4" alt=user.fullName)
+            else
+               img(src="/admin/images/avatar.png" alt=user.fullName width="150" class="w-36 h-36 rounded-full mb-4")
+            
+            if (user.fullName)
+               p.text-lg.font-semibold
+                  | Họ tên:
+                  b.ml-2 #{user.fullName}
+            
+            if (user.email)
+               p.text-lg.font-semibold
+                  | Email:
+                  b.ml-2 #{user.email}
+            
+            if (user.phone)
+               p.text-lg.font-semibold
+                  | Số điện thoại:
+                  b.ml-2 #{user.phone}
+            else
+               p.text-lg.font-semibold
+                  | Số điện thoại:
+                  b.ml-2 Không có
+            
+            
+            a(href=`/user/edit/${user.id}` class="mt-4 inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-200 ease-in-out")
+               // Icon chỉnh sửa (sử dụng SVG - bạn có thể thay bằng icon library khác nếu cần)
+               svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4h-7a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7m-10-10l7 7m0 0L13 4m7 7-7-7")
+               | Chỉnh sửa thông tin
+

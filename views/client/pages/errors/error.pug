@@ -1,0 +1,32 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Lỗi
+    script(src="https://cdn.tailwindcss.com")
+    script(src="https://unpkg.com/@heroicons/v2.0.18/24/outline/index.js")
+  body.bg-gradient-to-r.from-purple-500.to-pink-500.h-screen
+    div.min-h-screen.bg-gray-100.flex.items-center.justify-center.px-4
+      div.max-w-lg.w-full.text-center
+        div(class="text-9xl font-bold text-red-600 mb-8 animate-bounce") #{status}
+        h1(class="text-4xl font-bold text-gray-800 mb-4")= message
+        p(class="text-gray-600 mb-8 prose") 
+          | Rất tiếc đã xảy ra lỗi! Vui lòng thử lại sau hoặc liên hệ với quản trị viên.
+          if error && env === 'development'
+            pre.mt-4.p-4.bg-gray-800.text-red-200.rounded.text-left.overflow-x-auto
+              code= error.stack
+        div.flex.items-center.justify-center.space-x-4
+          a(href="/" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200")
+            | Trở về trang chủ
+          button(onclick="history.back()" class="border-2 border-red-600 text-red-600 hover:bg-red-50 px-6 py-3 rounded-lg font-medium transition-colors duration-200")
+            | Quay lại trang trước
+
+    style.
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-30px); }
+      }
+      .animate-bounce {
+        animation: bounce 1.5s infinite;
+      }

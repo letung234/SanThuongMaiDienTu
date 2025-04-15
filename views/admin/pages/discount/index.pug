@@ -1,0 +1,152 @@
+extends ../../layouts/default.pug
+include ../../mixins/search
+include ../../mixins/pagination
+include ../../mixins/form-change-multi
+include ../../mixins/alert
+include ../../mixins/moment
+
+block main
+  +alert-success(5000)
+  +alert-error(4000)
+  if(role.permission.includes("discounts_view"))
+    .container.mx-auto.px-4(class="lg:px-6")
+      .flex.flex-wrap.justify-between.items-center.mb-6
+        h1.text-2xl.font-bold.mb-4(class="md:mb-0") Danh sách mã giảm giá
+        a(
+          href=`${prefixAdmin}/discounts/create` 
+          class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center transition-colors"
+        )
+          i.fas.fa-plus.mr-2
+          | Tạo mới
+
+      .bg-white.rounded-xl.shadow-sm.overflow-hidden
+        .p-4.border-b.border-gray-100
+          +objectSearch(keyword)
+
+        .overflow-x-auto
+          table(class="w-full min-w-[800px]")
+            thead.bg-gray-50
+              tr
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Mã giảm giá
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Loại
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Giá trị
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Trạng thái
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Tổng số lần sử dụng
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Số lần đã sử dụng
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Ngày bắt đầu
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Ngày kết thúc
+                th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Hành động
+            tbody 
+              each discount, index in discounts
+                tr(
+                  class= index % 2 === 0 ? 'bg-white' : 'bg-gray-50', 
+                  id=`discount-row-${discount.id}`
+                )
+                  td.px-4.py-3.text-gray-700.whitespace-nowrap= discount.slug
+                  td.px-4.py-3
+                    .flex.flex-col
+                      span.badge.badge-info.inline-flex.items-center
+                        i.fas.fa-tag.mr-2
+                        | #{discount.discount_type}
+                      if discount.category_id
+                        .mt-1.text-xs.text-gray-500
+                          i.fas.fa-folder.mr-1
+                          | #{discount.category_id.title}
+                      if discount.product_id
+                        .mt-1.text-xs.text-gray-500
+                          i.fas.fa-cube.mr-1
+                          | #{discount.product_id.title}
+                      if discount.order_amount
+                        .mt-1.text-xs.text-gray-500
+                          i.fas.fa-coins.mr-1
+                          | Từ #{discount.order_amount}đ
+                  td.px-4.py-3.font-medium
+                    if discount.discount_unit === 'percentage'
+                      span.text-green-500
+                        i.fas.fa-percentage.mr-2
+                        | #{discount.discount_value}%
+                    else
+                      span.text-blue-500
+                        i.fas.fa-coins.mr-2
+                        | #{discount.discount_value}đ
+                  td.px-4.py-3
+                    .inline-flex.items-center
+                      span(
+                        class={
+                          'bg-green-100 text-green-800': discount.status === 'active',
+                          'bg-yellow-100 text-yellow-800': discount.status === 'inactive',
+                          'bg-red-100 text-red-800': discount.status === 'expired'
+                        }, 
+                        class="px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      )= discount.status
+                  td.px-4.py-3
+                    .inline-flex.items-center
+                      i(class="fas fa-tachometer-alt mr-2 text-blue-400")
+                      span.bg-blue-100.text-blue-800.text-xs.font-medium.px-2.py-1.rounded-full= discount.usage_limit
+
+                  td.px-4.py-3
+                    .inline-flex.items-center
+                      i(class="fas fa-check-circle mr-2 text-green-400")
+                      span.bg-green-100.text-green-800.text-xs.font-medium.px-2.py-1.rounded-full= discount.used_count
+                  td.px-4.py-3.text-gray-500.whitespace-nowrap
+                    i(class="fas fa-calendar-alt mr-2")
+                    +formatDate(discount.start_date)
+                  td.px-4.py-3.text-gray-500.whitespace-nowrap
+                    i.fas.fa-calendar-times.mr-2
+                    +formatDate(discount.end_date)
+                  td.px-4.py-3.relative
+                    button(
+                      id=`action-button-${discount.id}`
+                      class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    )
+                      i.fas.fa-ellipsis-v
+                    .absolute.right-0.mt-2.w-48.bg-white.rounded-md.shadow-lg.border.border-gray-100.z-50(
+                      id=`action-dropdown-${discount.id}`
+                      style="display: none;"
+                    )
+                      .py-1
+                        a.block.px-4.py-2.text-sm.text-gray-700(
+                          class="hover:bg-gray-50"
+                          href=`${prefixAdmin}/discounts/edit/${discount.id}`
+                        )
+                          i.fas.fa-edit.mr-2
+                          | Chỉnh sửa
+                        button.block.w-full.text-left.px-4.py-2.text-sm.text-red-500(
+                          class="hover:bg-gray-50"
+                          button-delete=discount.id
+                        )
+                          i.fas.fa-trash.mr-2
+                          | Xóa
+
+        .p-4.border-t.border-gray-100
+          +pagination(pagination)
+
+  else
+    +alert-permission(`${prefixAdmin}/discounts`)
+
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      // Xử lý hiển thị dropdown actions
+      document.querySelectorAll('[id^="action-button-"]').forEach(button => {
+        const discountId = button.id.replace('action-button-', '');
+        const dropdown = document.getElementById(`action-dropdown-${discountId}`);
+
+        button.addEventListener('click', function (e) {
+          e.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
+          const isVisible = dropdown.style.display === 'block';
+          // Ẩn tất cả dropdown khác
+          document.querySelectorAll('[id^="action-dropdown-"]').forEach(el => {
+            if (el !== dropdown) el.style.display = 'none';
+          });
+          // Hiển thị/ẩn dropdown hiện tại
+          dropdown.style.display = isVisible ? 'none' : 'block';
+        });
+      });
+
+      // Ẩn dropdown khi click ra ngoài
+      document.addEventListener('click', function () {
+        document.querySelectorAll('[id^="action-dropdown-"]').forEach(dropdown => {
+          dropdown.style.display = 'none';
+        });
+      });
+    });

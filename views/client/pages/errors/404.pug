@@ -1,0 +1,52 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 404 - Không tìm thấy trang
+    script(src="https://cdn.tailwindcss.com")
+    script(src="https://unpkg.com/@heroicons/v2.0.18/24/outline/index.js")
+  body.bg-gradient-to-r.from-purple-500.to-pink-500.h-screen
+    .container.mx-auto.flex.items-center.justify-center.h-full.px-4
+      .text-center.max-w-2xl
+        div(class=" text-[150px] md:text-[200px] font-bold text-white opacity-90 animate-bounce-in")
+          | 404
+        h1(class=" text-3xl md:text-4xl font-semibold text-white mb-4 animate-slide-up")
+          | Oops! Không tìm thấy trang
+        p(class=" text-lg text-white/90 mb-8 animate-slide-up delay-100 ")
+          | Trang bạn đang tìm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.
+        button(#homeButton class=" bg-white/90 text-purple-600 px-8 py-3 rounded-full font-semibold"  onclick="window.history.back()")
+          | Quay Lại
+    style.
+      @keyframes bounce-in {
+          0% { transform: scale(0.5); opacity: 0; }
+          60% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(1); }
+      }
+      .animate-bounce-in { animation: bounce-in 1s ease-out; }
+      
+      @keyframes spin-slow {
+          to { transform: rotate(360deg); }
+      }
+      .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+      
+      @keyframes slide-up {
+          from { transform: translateY(30px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+      }
+      .animate-slide-up { animation: slide-up 0.8s ease-out forwards; }
+      .delay-100 { animation-delay: 0.3s; }
+      
+      @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+      }
+      .animate-fade-in { animation: fade-in 1s ease-out 0.5s backwards; }
+    script.
+      document.getElementById('homeButton').addEventListener('mouseover', () => {
+          document.getElementById('homeButton').style.transform = 'translateX(-3px)';
+      });
+
+      document.getElementById('homeButton').addEventListener('mouseout', () => {
+          document.getElementById('homeButton').style.transform = 'translateX(0)';
+      });

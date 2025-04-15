@@ -1,0 +1,122 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+
+  .container.my-5
+    .row
+      .col-12
+        +box-head("Đặt hàng")
+          svg.w-6.h-6.ml-2(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z")
+
+    .row
+      .col-12
+        .card.shadow-sm.mb-4
+          .card-body.p-0
+            .table-responsive
+              table.table.table-hover
+                thead.bg-light
+                  tr
+                    th(scope="col") STT
+                    th(scope="col" ) Ảnh
+                    th(scope="col" class="w-80") Tên sản phẩm
+                    th(scope="col").text-right Giá
+                    th(scope="col").text-center Số lượng
+                    th(scope="col").text-right Tổng
+                tbody
+                  if(cartDetail.products.length > 0)
+                    each item, index in cartDetail.products
+                      tr
+                        td.align-middle.text-center #{index+1}
+                        td.align-middle
+                          img(
+                            src=item.productInfo.thumbnail 
+                            alt=item.productInfo.title 
+                            style="width:70px;height:70px;object-fit:cover"
+                          )
+                        td.align-middle
+                          div.font-weight.mb-1 #{item.productInfo.title}
+                          if(item.variantDetails)
+                            small.text-muted (#{item.variantDetails.name}: #{item.variantDetails.value})
+                        td.align-middle.text-right
+                          | #{helpers.formatNumber(item.productInfo.priceNew)}₫
+                        td.align-middle.text-center #{item.quantity}
+                        td.align-middle.text-right.text-danger
+                          | #{helpers.formatNumber(item.totalPrice)}₫
+                  else
+                    tr
+                      td.text-center.py-5(colspan="6")
+                        i.fas.fa-shopping-cart.mr-2
+                        | Giỏ hàng trống
+            if(cartDetail.products.length > 0)
+              .total-price.bg-light.p-3.text-right
+                h5.mb-0
+                  | Tổng đơn hàng:
+                  span.text-danger.ml-2 #{helpers.formatNumber(cartDetail.totalPrice)}₫
+
+    if(cartDetail.products.length > 0)
+      
+      .row.mt-4
+        .col-12
+          .card.shadow-sm
+            .card-body
+              h5.card-title.mb-4 Thông tin thanh toán
+              form(action="/checkout/order" method="POST")
+                .row
+                  .col-md-6
+                    .form-group
+                      label(for="discountCode") Mã giảm giá
+                      .input-group
+                        input.form-control(
+                          type="text" 
+                          id="discountCode" 
+                          name="discountCode"
+                          placeholder="Nhập mã giảm giá (nếu có)"
+                        )
+                .row
+                  .col-md-6
+                    .form-group
+                      label(for="fullName") Họ tên *
+                      .input-group
+                        .input-group-prepend
+                          span.input-group-text
+                            i.fas.fa-user
+                        input.form-control(
+                          type="text" 
+                          id="fullName" 
+                          name="fullName" 
+                          required
+                        )
+                  .col-md-6
+                    .form-group
+                      label(for="phone") Số điện thoại *
+                      .input-group
+                        .input-group-prepend
+                          span.input-group-text
+                            i.fas.fa-phone
+                        input.form-control(
+                          type="text" 
+                          id="phone" 
+                          name="phone" 
+                          required
+                        )
+                  .col-12
+                    .form-group
+                      label(for="address") Địa chỉ *
+                      .input-group
+                        .input-group-prepend
+                          span.input-group-text
+                            i.fas.fa-map-marker-alt
+                        input.form-control(
+                          type="text" 
+                          id="address" 
+                          name="address" 
+                          required
+                        )
+                button.btn.btn-primary.btn-lg.btn-block(type="submit")
+                  i.far.fa-credit-card.mr-2
+                  | Hoàn tất đặt hàng

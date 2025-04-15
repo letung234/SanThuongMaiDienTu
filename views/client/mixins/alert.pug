@@ -1,0 +1,21 @@
+mixin alert-success(time)
+  - if (messages.success)
+    .message.info
+      div(
+        class="alert alert-success bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between"
+        show-alert
+        data-time=time
+      )
+        span(class="font-semibold") #{messages.success}
+        span(class="cursor-pointer ml-4 text-xl font-bold" close-alert) ×
+
+mixin alert-error(time)
+  - if (messages.error)
+    .message.info
+      div(
+        class="alert alert-danger bg-red-500 text-white p-4 rounded-lg shadow-lg flex items-center justify-between"
+        show-alert
+        data-time=time
+      )
+        span(class="font-semibold") #{messages.error}
+        span(class="cursor-pointer ml-4 text-xl font-bold" close-alert) ×

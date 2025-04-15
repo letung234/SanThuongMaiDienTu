@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+const asyncWrapper = require("../../helpers/asyncWrapper");
+const controller = require("../../controllers/client/checkout.controller");
+const authenMiddleware = require("../../middlewares/client/auth.middleware");
+router.get("/", asyncWrapper(controller.index));
+router.post("/order", asyncWrapper(controller.order));
+router.get("/success/:orderId", asyncWrapper(controller.success));
+router.get("/history", asyncWrapper(controller.history));
+module.exports = router;

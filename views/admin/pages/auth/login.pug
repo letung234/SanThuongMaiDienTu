@@ -1,0 +1,42 @@
+extends ../../layouts/auth.pug
+include ../../mixins/alert.pug
+
+
+block main
+  +alert-error(3000)
+
+  .min-h-screen.flex.py-20.justify-center.bg-gray-50.px-4(class="sm:px-6 lg:px-8")
+    .max-w-md.w-full.space-y-8
+      div
+        h1(
+          class="relative text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-cyan-500 to-blue-500 animate-pulse text-center"
+          style="text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff; font-family: 'Courier New', monospace;"
+        )
+          span.animate-flicker ADMIN
+          .absolute.inset-0.bg-gradient-to-r.from-cyan-500.to-blue-500.opacity-30.blur-xl.animate-pulse
+        h2.mt-6.text-center.text-3xl.font-extrabold.text-gray-900
+          | Đăng nhập vào tài khoản
+
+      form.mt-8.space-y-6(action=`${prefixAdmin}/auth/login` method='POST')
+        input(type='hidden' name='remember' value='true')
+        .rounded-md.shadow-sm.-space-y-px
+          .mb-4
+            label.sr-only(for='email') Email
+            .relative
+              .absolute.inset-y-0.left-0.pl-3.flex.items-center.pointer-events-none
+                i.far.fa-envelope.text-gray-400
+              input#email(name='email' type='email' autocomplete='email' required placeholder='Email của bạn' class=' appearance-none rounded-none relative block w-full px-10 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm')
+          
+          div
+            label.sr-only(for='password') Mật khẩu
+            .relative
+              .absolute.inset-y-0.left-0.pl-3.flex.items-center.pointer-events-none
+                i.fas.fa-lock.text-gray-400
+              input#password(name='password' type='password' autocomplete='current-password' required placeholder='Mật khẩu' class='appearance-none rounded-none relative block w-full px-10 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm')
+
+
+        div
+          button.group(type='submit' class='transition-colors duration-200  relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500')
+            span.absolute.left-0.inset-y-0.flex.items-center.pl-3
+              i.fas.fa-sign-in-alt.text-gray-300
+            | Đăng nhập

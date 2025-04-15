@@ -1,0 +1,16 @@
+const express = require("express");
+const router = express.Router();
+const multer = require("multer");
+const asyncWrapper = require("../../helpers/asyncWrapper");
+const upload = multer();
+const uploadStream = require("../../middlewares/admin/uploadCloud.middleware");
+const controller = require("../../controllers/admin/room-chat.controller");
+router.get("/", asyncWrapper(controller.index));
+router.get("/create", asyncWrapper(controller.create));
+router.delete("/delete", asyncWrapper(controller.delete));
+router.get('/edit/:id', asyncWrapper(controller.edit));
+router.post("/create", asyncWrapper(controller.createPost));
+router.patch("/edit/:id", asyncWrapper(controller.editPatch));
+router.delete('/delete/:id', asyncWrapper(controller.delete));
+router.get('/chat', asyncWrapper(controller.chat));
+module.exports = router;

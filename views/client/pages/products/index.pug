@@ -1,0 +1,14 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+include ../../mixins/product-layout.pug
+include ../../../admin/mixins/pagination.pug
+
+block main 
+   .container.my-3
+    .row
+      .col-12
+        +box-head(pageTitle)
+
+    +product-grid(products)
+    div(class="w-full mt-2")
+      +pagination(pagination)

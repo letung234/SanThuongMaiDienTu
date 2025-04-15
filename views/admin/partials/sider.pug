@@ -1,0 +1,100 @@
+//- sider.pug
+sider(class="hidden [&.hidden]:translate-x-0 fixed left-0 top-16 bottom-0 w-64 bg-gradient-to-b from-white to-blue-50 shadow-xl transform transition-transform duration-300 ease-in-out md:translate-x-0 z-40")
+  .inner-menu.overflow-y-auto.h-full
+    ul.p-4.space-y-3
+      li
+        a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200" 
+          href=`${prefixAdmin}/dashboard`
+        )
+          i.fas.fa-home.text-lg.mr-4.text-blue-500
+          span.font-medium Tổng quan
+
+      if(role.permission.includes("products-category_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/products-category`
+          )
+            i.fas.fa-layer-group.text-lg.mr-4.text-green-500
+            span.font-medium Danh mục sản phẩm
+            
+      if(role.permission.includes("blog-category_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/blog-category`
+          )
+            i.fas.fa-folder-open.text-lg.mr-4.text-purple-500
+            span.font-medium Quản lý chuyên mục
+
+      if(role.permission.includes("blogs_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/blogs`
+          )
+            i.fas.fa-edit.text-lg.mr-4.text-pink-500
+            span.font-medium Bài viết
+      if(role.permission.includes("discounts_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/discounts`
+          )
+            i.fas.fa-tag.text-lg.mr-4.text-red-500
+            span.font-medium Mã giảm giá
+      if(role.permission.includes("order_view"))
+        a(class="flex items-center justify-between px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+          href=`${prefixAdmin}/orders`
+        )
+          .flex.items-center
+            i.fas.fa-shopping-cart.text-lg.mr-4.text-indigo-500
+            span.font-medium Đơn hàng
+
+      if(role.permission.includes("products_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/products`
+          )
+            i.fas.fa-cube.text-lg.mr-4.text-orange-500
+            span.font-medium Sản phẩm
+
+      if(role.permission.includes("roles_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/roles`
+          )
+            i.fas.fa-users-cog.text-lg.mr-4.text-yellow-500
+            span.font-medium Nhóm quyền
+
+      if(role.permission.includes("roles_permissions"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/roles/permissions`
+          )
+            i.fas.fa-shield-alt.text-lg.mr-4.text-teal-500
+            span.font-medium Phân quyền
+
+      if(role.permission.includes("accounts_view"))
+        li
+          a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+            href=`${prefixAdmin}/accounts`
+          )
+            i.fas.fa-user-friends.text-lg.mr-4.text-cyan-500
+            span.font-medium Tài khoản
+      li
+        a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+          href=`${prefixAdmin}/rooms/chat`
+        )
+          i.fas.fa-envelope.text-lg.mr-4.text-violet-500
+          span.font-medium Tin nhắn
+
+      //- Thêm mục Phòng chat
+      li
+        a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+          href=`${prefixAdmin}/rooms`
+        )
+          i.fas.fa-comment-dots.text-lg.mr-4.text-fuchsia-500
+          span.font-medium Phòng chat
+      li
+        a(class="flex items-center px-4 py-3 text-gray-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+          href=`${prefixAdmin}/settings/general`
+        )
+          i.fas.fa-cogs.text-lg.mr-4.text-gray-500
+          span.font-medium Cài đặt

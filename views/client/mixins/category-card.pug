@@ -1,0 +1,5 @@
+mixin category-card(category)
+  a(href=`/products/${category.slug}` class="group relative block h-48 overflow-hidden rounded-xl bg-gray-100")
+    img(class=" w-full h-full object-cover transform group-hover:scale-105 transition-transform" src=category.thumbnail, alt=category.title)
+    div(class=" absolute inset-0 bg-black/40 flex items-center justify-center")
+      h3.text-white.text-lg.font-semibold= category.title

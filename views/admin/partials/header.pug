@@ -1,0 +1,40 @@
+header.fixed.top-0.left-0.right-0.h-16.bg-white.shadow-sm.z-50
+  .container.mx-auto.h-full.px-4
+    .flex.items-center.justify-between.h-full
+      button(class=" mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-100" id="menuToggle")
+          i.fas.fa-bars.text-xl
+      //- Logo
+      a.text-xl.font-bold.text-gray-800(href=`${prefixAdmin}/dashboard`) 
+        span.text-blue-600 ADMIN
+
+      //- User Section
+      .flex.items-center.gap-4
+        //- Avatar
+        img(
+          src=user.avatar 
+          class="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
+          alt="User avatar"
+        )
+
+        //- Desktop View
+        div(class=" hidden md:flex items-center gap-4")
+          a(
+            href=`${prefixAdmin}/my-account` 
+            class="text-gray-700 hover:text-blue-600 text-sm font-medium transition-colors"
+          ) 
+            i.fas.fa-user-circle.mr-2
+            | #{user.fullName}
+          
+          a(
+            href=`${prefixAdmin}/auth/logout` 
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors transform hover:scale-[1.02]"
+          )
+            i.fas.fa-sign-out-alt.mr-2
+            | Đăng xuất
+
+        //- Mobile View
+        a(
+          href=`${prefixAdmin}/auth/logout` 
+          class="md:hidden text-red-600 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors"
+        )
+          i.fas.fa-sign-out-alt.text-lg

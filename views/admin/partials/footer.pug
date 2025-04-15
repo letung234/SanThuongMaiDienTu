@@ -1,0 +1,41 @@
+footer.bg-gray-900.text-gray-300.pt-12.pb-8.mt-3
+  .container.mx-auto.px-4
+    div(class=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8")
+      .space-y-4
+        h5.text-xl.font-bold.text-white Về chúng tôi
+        p.text-gray-400 Công ty chuyên cung cấp giải pháp công nghệ hiện đại và sáng tạo cho mọi doanh nghiệp
+        img.w-32(src=settingGeneral.logo alt="Logo")
+
+      .space-y-4
+        h5.text-xl.font-bold.text-white Liên kết nhanh
+        nav.flex.flex-col.space-y-2
+          a(href="#" class="hover:text-white transition-colors") Trang chủ
+          a(href="#" class="hover:text-white transition-colors") Dịch vụ
+          a(href="#" class="hover:text-white transition-colors") Giới thiệu
+          a(href="#" class="hover:text-white transition-colors") Liên hệ
+
+      .space-y-4
+        h5.text-xl.font-bold.text-white Thông tin liên hệ
+        .flex.flex-col.space-y-2
+          .flex.items-center
+            i.fas.fa-map-marker-alt.mr-2
+            span 123 Đường ABC, Hà Nội
+          .flex.items-center
+            i.fas.fa-phone.mr-2
+            span (+84) 347-754-069
+          .flex.items-center
+            i.fas.fa-envelope.mr-2
+            span tunglt072603@gmail.com 
+
+      .space-y-4
+        h5.text-xl.font-bold.text-white Mạng xã hội
+        .flex.space-x-4
+          a(href="#" class=" w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors")
+            i.fab.fa-facebook-f
+          a(href="#" class=" w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-400 transition-colors")
+            i.fab.fa-twitter
+          a(href="#" class=" w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 transition-colors")
+            i.fab.fa-instagram
+
+    .border-t.border-gray-800.pt-8.text-center
+      p.text-gray-400 © 2025 #{settingGeneral.copyright}. All rights reserved.

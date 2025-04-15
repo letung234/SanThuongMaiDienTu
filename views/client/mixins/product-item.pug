@@ -1,0 +1,61 @@
+mixin product-item(product)
+  - 
+    const hasVariants = product.variants && product.variants.length > 0;
+    let minPrice = Infinity;
+    let maxDiscount = 0;
+    let thumbnail =  product.thumbnail[0] ;
+    
+    if (hasVariants) {
+      for (const variant of product.variants) {
+        for (const val of variant.value) {
+          const discountedPrice = val.price * (1 - val.discountPercentage / 100);
+          minPrice = Math.min(minPrice, discountedPrice);
+          maxDiscount = Math.max(maxDiscount, val.discountPercentage);
+        }
+      }
+    } else {
+      minPrice = product.price * (1 - (product.discountPercentage || 0) / 100);
+      maxDiscount = product.discountPercentage || 0;
+    }
+
+  div(class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden product-item")
+    div(class="relative aspect-square overflow-hidden")
+      p(productServerData= product class="hidden")
+      img(
+        src=thumbnail
+        alt=product.title
+        class="w-full h-full object-fill transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+        data-thumbnail=product.thumbnail.length > 1 ? product.thumbnail[1] : thumbnail
+      )
+      div(class="absolute top-2 left-2 space-y-2")
+        if product.featured === "1"
+          div(class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center")
+            i(class="fas fa-star mr-1 text-sm")
+            | Nổi bật
+        
+        if maxDiscount > 0
+          div(class="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold")
+            | Giảm #{maxDiscount}%
+    div(class="p-3 space-y-2")
+      h3(class="font-medium text-gray-900 truncate hover:text-blue-600 transition-colors")
+       h4(style="height: 39px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;")= product.title
+      div(class="flex items-baseline gap-2")
+        span(class="text-lg font-bold text-red-600")= `$${minPrice.toFixed(2)}`
+        if hasVariants
+          span(class="text-xs text-gray-500") Giá từ
+        else if product.discountPercentage > 0
+          del(class="text-sm text-gray-400")= `$${product.price.toFixed(2)}`
+      div(class="text-xs text-gray-500 h-[32px]")
+        if hasVariants
+          - const totalStock = product.variants.reduce((sum, variant) => sum + variant.value.reduce((s, v) => s + v.stock, 0), 0);
+          span= `${totalStock} sản phẩm • ${product.variants.length} phiên bản`
+        else
+          span= `Còn lại: ${product.stock} sản phẩm`
+      div(class="w-full ")
+        a(
+          href=`/products/detail/${product.slug}` 
+          class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center" 
+        )
+          i(class="fas fa-info-circle mr-2") 
+          | Xem chi tiết

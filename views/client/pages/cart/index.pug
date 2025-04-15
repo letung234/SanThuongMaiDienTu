@@ -1,0 +1,106 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+include ../../mixins/alert.pug
+include ../../mixins/product-variant.pug
+
+block main
+  +alert-success(5000)
+  +alert-error(5000)
+  
+  .container.mx-auto.px-4.py-8
+    .max-w-6xl.mx-auto
+      +box-head("Giỏ hàng của bạn")
+
+      if cartDetail.products.length > 0
+        .bg-white.rounded-lg.shadow-md.p-6.mb-6
+          div(class=" hidden md:grid grid-cols-7 gap-4 mb-4 px-4 font-medium text-gray-600")
+            .col-span-1 STT
+            .col-span-2 Sản phẩm
+            .col-span-1 Giá
+            .col-span-1 Số lượng
+            .col-span-1 Tổng
+            .col-span-1
+
+          .space-y-4
+            each item, index in cartDetail.products
+              - 
+                const originalPrice = item.variantDetails ? item.variantDetails.price : item.productInfo.price
+                const discount = item.variantDetails ? item.variantDetails.discountPercentage : item.productInfo.discountPercentage
+                const price = originalPrice * (1 - discount/100)
+                const totalPrice = price * item.quantity
+              
+              div(class=" grid grid-cols-1 md:grid-cols-7 gap-4 items-center p-4 border-b")
+                div(class=" text-gray-500 md:text-center") #{index + 1}
+                
+                div(class=" md:col-span-2 flex items-center space-x-4")
+                  img.w-20.h-20.object-contain.rounded-lg(
+                    src=item.productInfo.thumbnail[0],
+                    alt=item.productInfo.title
+                  )
+                  div
+                    a(
+                      class=" text-gray-800 hover:text-indigo-600 font-medium"
+                      href=`/products/detail/${item.productInfo.slug}`
+                    ) #{item.productInfo.title}
+                    if item.variant
+                      .mt-2
+                        span.bg-gray-100.text-gray-700.text-sm.px-2.py-1.rounded-full
+                          i.fas.fa-tag.mr-1
+                          | #{item.variant.name}: #{item.variant.value}
+                        if item.variantDetails
+                          .mt-1.text-sm
+                            +variant-price(item.variantDetails)
+
+                .text-indigo-600.font-medium
+                  | #{price.toLocaleString()}$
+                  if discount > 0
+                    .text-sm.text-gray-500.line-through
+                      | #{originalPrice.toLocaleString()}$
+
+                .flex.items-center
+                  input.w-20.py-1.px-2.border.rounded.text-center(
+                    type="number",
+                    value=item.quantity,
+                    min="1",
+                    data-product-id=item.product_id,
+                    data-variant=item.variant ? JSON.stringify(item.variant) : 'null'
+                  )
+
+                .font-medium.text-gray-800
+                  | #{totalPrice.toLocaleString()}$
+
+                .text-center
+                  button.remove-item-btn(
+                    data-product-id=item.product_id,
+                    data-variant=item.variant ? JSON.stringify(item.variant) : 'null',
+                    class="text-red-500 hover:text-red-700"
+                  )
+                    i.fas.fa-trash-alt
+
+          .border-t.pt-6.mt-6
+            .flex.justify-end.items-center
+              .text-xl.font-bold.text-gray-800
+                | Tổng cộng: 
+                span#total-price #{cartDetail.totalPrice.toLocaleString()}$
+
+            .flex.justify-end.mt-6
+              a(
+                class=" bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+                href="/checkout"
+              ) 
+                i.fas.fa-credit-card.mr-2
+                | Tiến hành thanh toán
+
+      else
+        .text-center.py-12
+          i.fas.fa-shopping-cart.text-4xl.text-gray-400.mb-4
+          p.text-gray-600.text-lg Giỏ hàng của bạn đang trống
+          a(
+            class=" mt-4 inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+            href="/products"
+          )
+            i.fas.fa-arrow-left.mr-2
+            | Tiếp tục mua sắm
+
+block script
+  script(src="/js/cart.js")

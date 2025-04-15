@@ -1,0 +1,25 @@
+const express = require("express");
+const router = express.Router();
+const multer = require("multer");
+const asyncWrapper = require("../../helpers/asyncWrapper");
+const upload = multer();
+const uploadStream = require("../../middlewares/admin/uploadCloud.middleware");
+const controller = require("../../controllers/client/user.controller");
+const validate = require("../../validaters/client/user.validate");
+const authenMiddleware = require("../../middlewares/client/auth.middleware");
+
+router.get("/register", asyncWrapper(controller.register));
+router.get("/login", asyncWrapper(controller.login));
+router.post("/register", validate.registerPost, asyncWrapper(controller.registerPost));
+router.post("/login", validate.loginPost, asyncWrapper(controller.loginPost));
+router.get("/logout", asyncWrapper(controller.logout));
+router.get("/password/forgot", asyncWrapper(controller.forgotPassword));
+router.post("/password/forgot", validate.forgotPassword, asyncWrapper(controller.forgotPasswordPost));
+router.get("/password/otp", asyncWrapper(controller.otpPassword));
+router.post("/password/otp", asyncWrapper(controller.otpPasswordPost));
+router.get("/password/reset", asyncWrapper(controller.resetPassword));
+router.post("/password/reset", validate.resetPassword, asyncWrapper(controller.resetPasswordPost));
+router.get("/info",authenMiddleware.requireAuth ,asyncWrapper(controller.info));
+router.get("/edit/:id", authenMiddleware.requireAuth, asyncWrapper(controller.edit));
+router.patch("/edit/:id",upload.single("avatar"), uploadStream.upload, authenMiddleware.requireAuth, asyncWrapper(controller.editPatch));
+module.exports = router;

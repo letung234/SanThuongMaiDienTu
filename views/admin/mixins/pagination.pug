@@ -1,0 +1,41 @@
+mixin pagination(pagination)
+   nav(class="mt-6")
+      ul(class="flex flex-wrap justify-center gap-2")
+         if(pagination.currentPage > 2)
+            li
+            button(
+                class="px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 text-gray-600"
+                button-pagination=1
+            ) 
+                i(class="fas fa-angles-left")
+         
+         if(pagination.currentPage > 1)
+            li
+            button(
+                class="px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 text-gray-600"
+                button-pagination=pagination.currentPage - 1
+            ) 
+                i(class="fas fa-chevron-left")
+               
+         - for(var i = 1;i<=pagination.totalPage;i++)
+            li
+               button(
+                    class=`px-3 py-1 rounded-md ${pagination.currentPage == i ? "bg-blue-600 text-white" : "border border-gray-300 hover:bg-gray-100 text-gray-600"}`
+                    button-pagination=i
+               ) #{i}
+         
+         if(pagination.currentPage < pagination.totalPage)
+            li
+               button(
+                    class="px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 text-gray-600"
+                    button-pagination=pagination.currentPage + 1
+               ) 
+                    i(class="fas fa-chevron-right")
+         
+         if(pagination.currentPage < pagination.totalPage-1)
+            li
+               button(
+                    class="px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 text-gray-600"
+                    button-pagination=pagination.totalPage
+               ) 
+                    i(class="fas fa-angles-right")

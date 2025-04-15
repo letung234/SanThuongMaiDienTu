@@ -1,0 +1,18 @@
+mixin sort 
+    div(sort class="space-y-2")
+      select(
+        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        name="sort"
+        sort-select
+      )
+        option(value="position-desc") Vị trí giảm dần
+        option(value="position-asc") Vị trí tăng dần
+        option(value="price-desc") Giá giảm dần
+        option(value="price-asc") Giá tăng dần
+        option(value="title-asc") Tiêu đề A - Z
+        option(value="title-desc") Tiêu đề Z - A
+
+      button(
+        class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+        sort-clear
+      ) Clear

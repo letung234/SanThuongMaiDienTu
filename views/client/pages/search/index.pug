@@ -1,0 +1,48 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+include ../../mixins/product-layout.pug
+include ../../../admin/mixins/pagination.pug
+block main 
+   .container
+      .row
+         +box-head("Sản Phẩm")
+      .row
+         if(products.length > 0)
+            +product-grid(products)
+            div(class="w-full mt-2")
+               +pagination(pagination)
+         else
+            div(class="min-h-[400px] flex flex-col items-center justify-center text-center py-8 px-4 w-full")
+               div(class="mb-6 text-gray-400")
+                  i(class="fas fa-exclamation-circle text-6xl")
+               
+               h3(class="text-xl font-semibold text-gray-600 mb-2") Không tìm thấy sản phẩm phù hợp
+               p(class="text-gray-500 mb-6 max-w-md mx-auto") Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với tiêu chí tìm kiếm của bạn. Vui lòng thử lại với từ khóa khác.
+               
+               a(
+                  href="/products" 
+                  class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all duration-300"
+               )
+                  i(class="fas fa-arrow-left mr-2")
+                  span Quay lại cửa hàng
+      .row
+         section.py-12.bg-gray-50.w-full
+            .container.mx-auto.px-4.w-full
+               +box-head("Nhà cung cấp")
+               div(class=" grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mt-8")
+                  each supplier in suppliers
+                     a(
+                        href=`/store/${supplier.id}`
+                        class="group flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1"
+                     )
+                        .relative.mb-3
+                           img(
+                           src=supplier.avatar
+                           alt=supplier.fullName
+                           class="h-20 w-20 rounded-full object-cover border-4 border-white ring-2 ring-blue-200 group-hover:ring-blue-400 transition-all"
+                           )
+                           .absolute.bottom-0.right-0.w-5.h-5.bg-green-400.rounded-full.border-2.border-white
+                        h2(class=" text-center font-semibold text-gray-700 group-hover:text-blue-600 transition-colors truncate w-full")
+                           | #{supplier.fullName}
+                        p.text-sm.text-gray-500.text-center.mt-1 Nhà cung cấp
+         

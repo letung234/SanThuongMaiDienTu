@@ -1,0 +1,200 @@
+extends ../../layouts/default.pug
+include ../../mixins/statitem.pug
+block main
+  div(class="container mx-auto px-4")
+    h1(class="text-3xl font-bold mb-6") Trang Tổng Quan
+
+    //- Thông tin tài khoản
+    div(class="bg-white rounded-lg shadow-md mb-6")
+      div(class="p-6 border-b border-gray-200")
+        h2(class="text-xl font-semibold flex items-center")
+          i(class="fas fa-user-circle mr-2 text-blue-500")
+          | Thông tin tài khoản
+      div(class="p-6")
+        div(class="flex flex-col md:flex-row gap-6")
+          div(class="md:w-1/3 flex justify-center")
+            if(account.avatar)
+              img(
+                src=account.avatar 
+                class="h-48 w-48 rounded-full object-cover border-4 border-white shadow-lg"
+              )
+          div(class="md:w-2/3 space-y-3")
+            if(account.fullName)
+              p(class="text-gray-600")
+                span(class="font-semibold") Họ tên: 
+                | #{account.fullName}
+            if(account.email)
+              p(class="text-gray-600")
+                span(class="font-semibold") Email: 
+                | #{account.email}
+            if(account.phone)
+              p(class="text-gray-600")
+                span(class="font-semibold") Số điện thoại: 
+                | #{account.phone}
+            if(roleName.title)
+              p(class="text-gray-600")
+                span(class="font-semibold") Phân quyền: 
+                span(class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm") #{roleName.title}
+
+    //- Các thống kê
+    div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")
+
+      //- Danh mục sản phẩm
+      if(statistic.categoryProduct)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-blue-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-boxes mr-2 text-blue-500")
+              | Danh mục sản phẩm
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.categoryProduct.total)
+            +StatItem("Hoạt động", statistic.categoryProduct.active, "text-green-600")
+            +StatItem("Không hoạt động", statistic.categoryProduct.inactive, "text-red-600")
+
+      //- Sản phẩm
+      if(statistic.product)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-green-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-cube mr-2 text-green-500")
+              | Sản phẩm
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.product.total)
+            +StatItem("Hoạt động" ,statistic.product.active ,"text-green-600")
+            +StatItem("Không hoạt động", statistic.product.inactive, "text-red-600")
+
+      //- Danh mục bài viết
+      if(statistic.categoryBlog)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-purple-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-folder-open mr-2 text-purple-500")
+              | Danh mục bài viết
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số" ,statistic.categoryBlog.total)
+            +StatItem("Hoạt động" ,statistic.categoryBlog.active, "text-green-600")
+            +StatItem("Không hoạt động" ,statistic.categoryBlog.inactive ,"text-red-600")
+
+      //- Bài viết
+      if(statistic.blog)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-pink-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-blog mr-2 text-pink-500")
+              | Bài viết
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.blog.total)
+            +StatItem("Bản nháp" ,statistic.blog.draft ,"text-yellow-600")
+            +StatItem("Đã xuất bản", statistic.blog.published, "text-green-600")
+            +StatItem("Lưu trữ" ,statistic.blog.archived ,"text-gray-600")
+
+      //- Mã giảm giá
+      if(statistic.discount)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-orange-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-tag mr-2 text-orange-500")
+              | Mã giảm giá
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.discount.total)
+            +StatItem("Hoạt động", statistic.discount.active ,"text-green-600")
+            +StatItem("Hết hạn" ,statistic.discount.expired ,"text-red-600")
+
+      //- Đơn hàng
+      if(statistic.order)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-teal-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-shopping-cart mr-2 text-teal-500")
+              | Đơn hàng
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.order.total)
+            +StatItem("Đã thanh toán" ,statistic.order.paid, "text-green-600")
+            +StatItem("Đang xử lý", statistic.order.processing ,"text-blue-600")
+            +StatItem("Hoàn thành", statistic.order.finished, "text-teal-600")
+            +StatItem("Đã hủy", statistic.order.canceled ,"text-red-600")
+
+      //- Tài khoản Admin
+      if(statistic.account)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-red-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-user-shield mr-2 text-red-500")
+              | Tài khoản Admin
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.account.total)
+            +StatItem("Hoạt động", statistic.account.active ,"text-green-600")
+            +StatItem("Không hoạt động", statistic.account.inactive, "text-red-600")
+
+      //- Tài khoản User
+      if(statistic.user)
+        div(class="bg-white rounded-lg shadow-md")
+          div(class="p-4 border-b border-gray-200 bg-indigo-50")
+            h3(class="text-lg font-semibold flex items-center")
+              i(class="fas fa-users mr-2 text-indigo-500")
+              | Tài khoản Người dùng
+          div(class="p-4 space-y-2")
+            +StatItem("Tổng số", statistic.user.total)
+            +StatItem("Hoạt động", statistic.user.active ,"text-green-600")
+            +StatItem("Không hoạt động", statistic.user.inactive ,"text-red-600")
+        if(statistic.orderDetails)
+          div(class="bg-white rounded-lg shadow-md")
+            div(class="p-4 border-b border-gray-200 bg-teal-50")
+              h3(class="text-lg font-semibold flex items-center")
+                i(class="fas fa-chart-line mr-2 text-teal-500")
+                | Thống kê đơn hàng chi tiết
+            div(class="p-4 grid grid-cols-1  gap-4")
+              //- Đã hoàn thành
+              div(class="bg-green-50 p-4 rounded-lg")
+                h4(class="font-semibold text-green-800 mb-2") Đã hoàn thành
+                +StatItem("Số lượng", statistic.orderDetails.completed.totalQuantity)
+                +StatItem("Tổng tiền", statistic.orderDetails.completed.totalAmount + "$", "text-green-600")
+
+              //- Đã hủy
+              div(class="bg-red-50 p-4 rounded-lg")
+                h4(class="font-semibold text-red-800 mb-2") Đã hủy
+                +StatItem("Số lượng", statistic.orderDetails.canceled.totalQuantity)
+                +StatItem("Tổng tiền", statistic.orderDetails.canceled.totalAmount+ "$", "text-red-600")
+
+              //- Đang xử lý
+              div(class="bg-blue-50 p-4 rounded-lg")
+                h4(class="font-semibold text-blue-800 mb-2") Đang xử lý
+                +StatItem("Số lượng", statistic.orderDetails.processing.totalQuantity)
+                +StatItem("Tổng tiền", statistic.orderDetails.processing.totalAmount+ "$", "text-blue-600")
+
+              //- Đã thanh toán
+              div(class="bg-purple-50 p-4 rounded-lg")
+                h4(class="font-semibold text-purple-800 mb-2") Đã thanh toán
+                +StatItem("Số lượng", statistic.orderDetails.paid.totalQuantity)
+                +StatItem("Tổng tiền", statistic.orderDetails.paid.totalAmount+ "$", "text-purple-600")
+
+              //- Tổng hợp lệ
+              div(class="bg-teal-50 p-4 rounded-lg")
+                h4(class="font-semibold text-teal-800 mb-2") Tổng hợp lệ
+                +StatItem("Tổng số lượng", statistic.orderDetails.totalValid.totalQuantity)
+                +StatItem("Tổng doanh thu", statistic.orderDetails.totalValid.totalAmount+ "$", "text-teal-600")
+
+        //- Thêm phần thống kê tài chính cho admin
+        if(statistic.financial && role.title === "Quản trị viên")
+          div(class="bg-white rounded-lg shadow-md mt-6")
+            div(class="p-4 border-b border-gray-200 bg-indigo-50")
+              h3(class="text-lg font-semibold flex items-center")
+                i(class="fas fa-coins mr-2 text-indigo-500")
+                | Thống kê tài chính
+            div(class="p-4 grid grid-cols-1 gap-4")
+              div(class="bg-white p-4 rounded-lg border border-gray-200")
+                h4(class="font-semibold mb-4 text-gray-700") Theo trạng thái
+                +StatItem("Hoàn thành", statistic.financial.totalCompleted+ "$")
+                +StatItem("Đã hủy", statistic.financial.totalCanceled+ "$", "text-red-600")
+                +StatItem("Đang xử lý", statistic.financial.totalProcessing+ "$")
+                +StatItem("Đã thanh toán", statistic.financial.totalPaid+ "$")
+                +StatItem("Tổng hợp lệ", statistic.financial.totalValid+ "$", "text-green-600")
+
+              div(class="bg-white p-4 rounded-lg border border-gray-200")
+                h4(class="font-semibold mb-4 text-gray-700") Chi tiết doanh thu
+                +StatItem("Tổng chiết khấu", statistic.financial.totalDiscount+ "$", "text-red-600")
+                div(class="mt-4 bg-yellow-50 p-3 rounded-lg")
+                  p(class="text-sm text-yellow-700") 
+                    i(class="fas fa-info-circle mr-2")
+                    | Chiết khấu 10% được tính trên tổng giá trị đơn hàng đã hoàn thành
+

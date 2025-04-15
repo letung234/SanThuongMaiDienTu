@@ -1,0 +1,229 @@
+extends ../../layouts/default.pug
+
+block main 
+  if(role.permission.includes("products_view"))
+    div(class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8")
+      div(class="bg-white shadow-lg rounded-lg p-6")
+        //- Header section
+        div(class="flex flex-col md:flex-row justify-between items-start mb-8 gap-4")
+          div(class="flex-1")
+            h1(class="text-3xl font-bold text-gray-900 mb-2") #{product.title}
+            div(class="flex flex-wrap gap-4 text-sm text-gray-500")
+              if(product.position)
+                span • Vị trí: ##{product.position}
+              if(product.createdBy)
+                span • Người tạo: 
+                  span(class="font-medium") #{product.createdBy.account_id}
+                span • Ngày tạo: 
+                  span(class="font-medium") #{moment(product.createdBy.createdAt).format("DD/MM/YYYY HH:mm")}
+
+          if(role.permission.includes("products_edit"))
+            if(product.variants.length > 0)
+              a(
+                href=`${prefixAdmin}/products/variantedit/${product.id}`
+                class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors whitespace-nowrap"
+              ) Chỉnh sửa
+            else 
+              a(
+                href=`${prefixAdmin}/products/edit/${product.id}`
+                class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors whitespace-nowrap"
+              ) Chỉnh sửa
+
+        //- Main content grid
+        div(class="grid grid-cols-1 md:grid-cols-2 gap-8")
+
+          //- Image slider
+          div(class="space-y-4 relative")
+            //- Main slider
+            div(class="swiper main-swiper rounded-lg shadow-lg")
+              div(class="swiper-wrapper")
+                each thumb, index in product.thumbnail
+                  div(class="swiper-slide")
+                    img(
+                      src=thumb
+                      alt=`Ảnh sản phẩm ${index + 1}`
+                      class="w-full h-96 object-cover"
+                    )
+              //- Navigation buttons
+              div(class="swiper-button-prev swiper-button-white")
+              div(class="swiper-button-next swiper-button-white")
+
+            //- Thumbnail slider
+            div(class="swiper thumbnail-swiper mt-4")
+              div(class="swiper-wrapper")
+                each thumb, index in product.thumbnail
+                  div(class="swiper-slide w-1/4 cursor-pointer group")
+                    div(class="relative h-24 border-4 border-transparent rounded-lg overflow-hidden transition-all duration-300")
+                      img(
+                        src=thumb
+                        alt=`Thumbnail ${index + 1}`
+                        class="w-full h-full object-cover"
+                      )
+
+          //- Product details
+          div(class="space-y-6")
+            //- Status badge
+            div(class="flex items-center")
+              span(class="text-sm font-medium text-gray-700 mr-2") Trạng thái:
+              span(
+                class=`px-2 py-1 rounded-full text-sm ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`
+              ) #{product.status === 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
+
+            //- Product info section
+            div(class="bg-gray-50 rounded-lg p-4 space-y-4")
+              //- Dynamic price area
+              div(class="space-y-2" id="variant-info")
+                if(product.variants.length === 0)
+                  div
+                    p(class="text-2xl font-bold text-blue-600") #{product.price}$
+                    if(product.discountPercentage > 0)
+                      div(class="flex items-center gap-2")
+                        span(class="text-gray-500 line-through") #{product.price}$
+                        span(class="text-red-500") -#{product.discountPercentage}%
+                  if(product.stock)
+                    p(class="text-sm text-gray-600") Còn lại: #{product.stock} sản phẩm
+                else
+                  p(class="text-gray-500 italic") Vui lòng chọn biến thể
+
+              //- Variants handling
+              if(product.variants && product.variants.length > 0)
+                div(class="space-y-4")
+                  each variant in product.variants
+                    div(class="space-y-2")
+                      h4(class="font-medium text-gray-900") #{variant.name}
+                      div(class="flex flex-wrap gap-2")
+                        each val in variant.value
+                          div(
+                            class="variant-option px-3 py-1.5  rounded-full border border-gray-300 cursor-pointer hover:border-blue-500 transition-colors"
+                            data-thumbnail-position=val.thumbnailPosition
+                            data-price=val.price
+                            data-discount=val.discountPercentage
+                            data-stock=val.stock
+                            variant
+                          ) #{val.value}
+
+            //- Description
+            if(product.description)
+              div(class="prose max-w-none border-t pt-4")
+                h3(class="text-xl font-semibold text-gray-900 mb-2") Mô tả sản phẩm
+                div !{product.description}
+
+    //- Swiper và các thư viện
+    link(rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css")
+    script(src="https://unpkg.com/swiper@8/swiper-bundle.min.js")
+
+    style.
+      .variant-option.active {
+        @apply border-red-500  bg-red-100 text-red-800 !important;
+      }
+      .main-swiper .swiper-button-prev,
+      .main-swiper .swiper-button-next {
+        @apply w-10 h-10 rounded-full bg-black bg-opacity-30 hover:bg-opacity-50 transition-colors;
+      }
+      .main-swiper .swiper-button-prev::after,
+      .main-swiper .swiper-button-next::after {
+        @apply text-white text-lg;
+      }
+      .main-swiper .swiper-button-prev { left: 1rem; }
+      .main-swiper .swiper-button-next { right: 1rem; }
+      .thumbnail-swiper .swiper-slide-thumb-active div {
+        @apply border-blue-500 !important;
+      }
+      .swiper-slide-thumb-active {
+        border: 2px solid #007aff; 
+        box-sizing: border-box;
+      }
+
+
+    
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        // Khởi tạo thumbnail swiper
+        const thumbSwiper = new Swiper('.thumbnail-swiper', {
+          slidesPerView: 4,
+          spaceBetween: 10,
+          watchSlidesProgress: true,
+          breakpoints: {
+            320: { slidesPerView: 3 },
+            768: { slidesPerView: 4 }
+          }
+        });
+
+        // Khởi tạo main swiper
+        const mainSwiper = new Swiper('.main-swiper', {
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+          thumbs: {
+            swiper: thumbSwiper
+          },
+          on: {
+            slideChange: function() {
+              const activeIndex = this.activeIndex;
+              // Cập nhật active cho variant option
+              document.querySelectorAll('.variant-option').forEach(option => {
+                const position = parseInt(option.dataset.thumbnailPosition);
+                option.classList.toggle('active', position === activeIndex);
+              });
+            }
+          }
+        });
+
+        // Xử lý chọn biến thể
+        document.querySelectorAll('.variant-option').forEach(option => {
+          option.addEventListener('click', function() {
+            // Xóa active cũ
+            document.querySelectorAll('.variant-option').forEach(el => {
+              el.classList.remove('active');
+            });
+            
+            // Thêm active mới
+            this.classList.add('active');
+            
+            // Cập nhật thông tin
+            const price = parseFloat(this.dataset.price);
+            const discount = parseFloat(this.dataset.discount);
+            const stock = parseInt(this.dataset.stock);
+            const finalPrice = discount > 0 ? price * (1 - discount/100) : price;
+
+            const variantInfo = `
+              <div class="space-y-2">
+                ${discount > 0 ? `
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl font-bold text-blue-600">${finalPrice.toFixed(2)}$</span>
+                    <span class="text-gray-500 line-through">${price}$</span>
+                    <span class="text-red-500">-${discount}%</span>
+                  </div>
+                ` : `
+                  <p class="text-2xl font-bold text-blue-600">${price}$</p>
+                `}
+                ${stock ? `<p class="text-sm text-gray-600">Còn lại: ${stock} sản phẩm</p>` : ''}
+              </div>
+            `;
+
+            document.getElementById('variant-info').innerHTML = variantInfo;
+
+            // Chuyển ảnh tương ứng
+            const position = parseInt(this.dataset.thumbnailPosition);
+            if (!isNaN(position) && position >= 0) {
+              mainSwiper.slideTo(position);
+            }
+          });
+        });
+        const variants = document.querySelectorAll('[variant]');
+
+        if (variants) {
+          const activeClasses ='bg-indigo-100 text-indigo-900 ring-2 ring-indigo-300 transition-colors duration-200 dark:bg-indigo-900 dark:text-indigo-100 dark:ring-indigo-600';        
+          variants.forEach(item => {
+            item.addEventListener('click', () => {
+              // Xóa các class active khỏi tất cả các phần tử
+              variants.forEach(el => el.classList.remove(...activeClasses.split(' ')));
+              // Thêm các class active cho phần tử được click
+              item.classList.add(...activeClasses.split(' '));
+            });
+          });
+        }
+
+        
+      });

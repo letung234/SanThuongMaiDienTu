@@ -1,0 +1,66 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+  .container.mx-auto.my-6.px-4
+    // Tiêu đề trang
+    +box-head("Chỉnh sửa thông tin tài khoản")
+    
+    // Box chứa form chỉnh sửa với background trắng, đổ bóng và bo tròn
+    .bg-white.shadow-md.rounded-lg.p-6
+      form(action=`/user/edit/:${user.id}?_method=PATCH` method="POST" enctype="multipart/form-data" class="space-y-6")
+        
+        .flex.flex-col.items-center
+          if user.avatar
+            img#avatarPreview(src=user.avatar alt=user.fullName class="w-36 h-36 rounded-full object-cover mb-2")
+          else
+            img#avatarPreview(src="/admin/images/avatar.png" alt=user.fullName class="w-36 h-36 rounded-full object-cover mb-2")
+          // Nút chọn ảnh (ẩn input file)
+          label(for="avatar" class="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-200 ease-in-out")
+            // Icon upload
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v9m0 0l-3-3m3 3l3-3M12 3v9")
+            | Chọn ảnh đại diện
+          input#avatar(type="file" name="avatar" accept="image/*" class="hidden")
+        
+        div(class=" grid grid-cols-1 md:grid-cols-2 gap-6")
+          // Họ tên
+          .flex.flex-col
+            label(for="fullName" class="text-gray-700 font-semibold") Họ tên
+            input#fullName(type="text" name="fullName" value=user.fullName placeholder="Nhập họ tên" class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500")
+          
+          // Email
+          .flex.flex-col
+            label(for="email" class="text-gray-700 font-semibold") Email
+            input#email(type="email" name="email" value=user.email placeholder="Nhập email" class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500")
+          
+          // Số điện thoại
+          .flex.flex-col
+            label(for="phone" class="text-gray-700 font-semibold") Số điện thoại
+            input#phone(type="text" name="phone" value=user.phone placeholder="Nhập số điện thoại" class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500")
+          
+          // Mật khẩu mới (nếu muốn cập nhật)
+          .flex.flex-col
+            label(for="password" class="text-gray-700 font-semibold") Mật khẩu mới
+            input#password(type="password" name="password" placeholder="Nhập mật khẩu mới (nếu muốn)" class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500")
+          
+        
+        // Nút submit cập nhật thông tin
+        button(type="submit" class="mt-4 inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition duration-200 ease-in-out")
+          // Icon xác nhận
+          svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          | Cập nhật thông tin
+
+  script.
+    // JS để cập nhật preview avatar khi người dùng chọn file mới
+    document.getElementById('avatar').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          document.getElementById('avatarPreview').src = evt.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    });

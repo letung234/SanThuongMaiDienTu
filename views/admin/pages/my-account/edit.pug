@@ -1,0 +1,100 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  div(class="container mx-auto px-4 py-8 max-w-2xl")
+    h1(class="text-3xl font-bold text-gray-800 mb-6 text-center") Cập nhật thông tin cá nhân
+
+    +alert-success(5000)
+    +alert-error(5000)
+
+    form(
+      action=`${prefixAdmin}/my-account/edit?_method=PATCH`
+      method="POST"
+      enctype="multipart/form-data"
+      class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+    )
+      div(class="mb-6")
+        label(
+          for="fullName"
+          class="block text-gray-700 text-sm font-medium mb-2"
+        ) Họ tên *
+        input(
+          type="text"
+          id="fullName"
+          name="fullName"
+          required
+          value=user.fullName
+          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        )
+
+      div(class="mb-6")
+        label(
+          for="email"
+          class="block text-gray-700 text-sm font-medium mb-2"
+        ) Email *
+        input(
+          type="email"
+          id="email"
+          name="email"
+          required
+          value=user.email
+          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        )
+
+      div(class="mb-6")
+        label(
+          for="password"
+          class="block text-gray-700 text-sm font-medium mb-2"
+        ) Mật khẩu
+        input(
+          type="password"
+          id="password"
+          name="password"
+          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="••••••••"
+        )
+
+      div(class="mb-6")
+        label(
+          for="phone"
+          class="block text-gray-700 text-sm font-medium mb-2"
+        ) Số điện thoại
+        input(
+          type="text"
+          id="phone"
+          name="phone"
+          value=user.phone
+          class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        )
+
+      div(class="mb-6")
+        label(
+          for="avatar"
+          class="block text-gray-700 text-sm font-medium mb-2"
+        ) Avatar
+        div(class="flex items-center gap-4" upload-image)
+          div(class="relative")
+            input(
+              type="file"
+              id="avatar"
+              name="avatar"
+              accept="image/*"
+              class="absolute opacity-0 w-0 h-0"
+              upload-image-input
+            )
+            label(
+              for="avatar"
+              class="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+            ) Chọn ảnh
+          img(
+            src=user.avatar
+            class="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+            upload-image-preview
+          )
+
+      div(class="flex justify-center")
+        button(
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors duration-300"
+        ) Cập nhật

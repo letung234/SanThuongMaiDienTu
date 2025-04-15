@@ -1,0 +1,148 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert
+include ../../mixins/box-search
+include ../../mixins/pagination
+
+block main
+  +alert-success(5000)
+  +alert-error(3000)
+  
+
+  div(class="container mx-auto px-4 py-8")
+    div(class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4")
+      h1(class="text-3xl font-bold text-gray-800") Quản lý nhóm chat Admin
+      
+      div(class="w-full md:w-96")
+        +box-search(keyword, `${prefixAdmin}/rooms`)
+
+      if(role.permission.includes("room_create"))
+        a(
+          href=`${prefixAdmin}/rooms/create` 
+          class="w-full md:w-auto bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center"
+        )
+          i(class="fas fa-plus mr-2")
+          | Tạo nhóm mới
+
+    div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")
+      each room in records
+        - const currentUserRole = room.users.find(user => user.Account_id === a.id.toString())?.role
+        div(class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow")
+          div(class="p-4 bg-gray-50 border-b flex items-center justify-between")
+            div(class="flex items-center truncate")
+              img(
+                src=room.avatar || "/admin/images/default-group.png" 
+                class="w-12 h-12 rounded-full object-cover flex-shrink-0"
+              )
+              div(class="ml-3 truncate")
+                h3(class="font-semibold text-gray-800 truncate")= room.title
+                p(class="text-sm text-gray-500")= room.status === "active" ? "Đang hoạt động" : "Đã ẩn"
+            
+            if(currentUserRole === "admin")
+              div(dropdown class=" relative ml-2 flex-shrink-0")
+                button(class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-200 transition-colors")
+                  i(class="fas fa-ellipsis-v")
+                div(dropdown-menu class=" absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden")
+                  a(
+                    href=`${prefixAdmin}/rooms/edit/${room._id}`
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  ) Chỉnh sửa
+                  button(
+                    onclick=`deleteRoom('${room._id}')`
+                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                  ) Xóa
+
+          div(class="p-4")
+            div(class="mb-4")
+              span(class="text-sm font-medium text-gray-600") Thành viên:
+              div(class="flex flex-wrap gap-2 mt-2")
+                each userRoom in room.users
+                  div(class="flex items-center bg-gray-100 rounded-full px-3 py-1")
+                    
+                    img(
+                      src=userRoom.avatar
+                      class="w-6 h-6 rounded-full object-cover"
+                    )
+                    span(class="ml-2 text-sm text-gray-700 truncate")= userRoom.role === "admin" ? "Quản trị" : "Thành viên"
+
+            div(class="flex justify-end")
+              a(
+                href=`${prefixAdmin}/chat/${room._id}`
+                class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center"
+              )
+                i(class="fas fa-comment-dots mr-2")
+                | Vào chat
+    +pagination(pagination)
+
+  script.
+      document.querySelectorAll('[dropdown]').forEach(dropdown => {
+        const button = dropdown.querySelector('button')
+        const menu = dropdown.querySelector('[dropdown-menu]')
+
+        if (button && menu) {
+          button.addEventListener('click', (e) => {
+            e.stopPropagation()
+            const isOpen = !menu.classList.contains('hidden')
+            document.querySelectorAll('[dropdown-menu]').forEach(otherMenu => {
+              if (otherMenu !== menu) otherMenu.classList.add('hidden')
+            })
+          
+            menu.classList.toggle('hidden', isOpen)
+          })
+
+          document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+              menu.classList.add('hidden')
+            }
+          })
+          menu.addEventListener('click', (e) => {
+            e.stopPropagation()
+          })
+        }
+      })
+
+
+    function deleteRoom(roomId) {
+      if (confirm("Bạn có chắc chắn muốn xóa nhóm này?")) {
+        fetch(`rooms/delete/${roomId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(response => {
+          if (response.ok) {
+            Toastify({
+              text: "Xóa nhóm thành công!",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "right",
+              backgroundColor: "green",
+            }).showToast()
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000)
+          } else {
+            Toastify({
+              text: "Xóa nhóm thất bại!",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "right",
+              backgroundColor: "red",
+            }).showToast()
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error)
+          Toastify({
+            text: "Có lỗi xảy ra!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "orange",
+          }).showToast()
+        })
+      }
+    }

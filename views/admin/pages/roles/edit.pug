@@ -1,0 +1,43 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+  if(role.permission.includes("roles_edit"))
+    h1(class="text-3xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center gap-3")
+         i(class="fas fa-shield-alt text-blue-500")
+         | Chỉnh Sửa Phân quyền
+    
+
+    form(
+      action=`${prefixAdmin}/roles/edit/${data.id}?_method=PATCH`
+      method="POST"
+      class="space-y-6"
+    )
+      div(class="form-group")
+        label(for="title" class="block text-lg font-medium text-gray-700") Tiêu đề
+        input(
+          type="text"
+          class="form-control px-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+          id="title"
+          name="title"
+          required
+          value=data.title
+        )
+      div(class="form-group")
+        label(for="desc" class="block text-lg font-medium text-gray-700") Mô tả
+        textarea(
+          type="text"
+          class="form-control px-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+          id="desc"
+          name="description"
+          rows="5"
+        ) !{data.description}
+      div(class="form-group text-right")
+        button(
+          type="submit"
+          class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        )
+          i(class="fas fa-save mr-2") 
+          | Cập nhật

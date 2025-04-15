@@ -1,0 +1,154 @@
+extends ../../layouts/default.pug
+include ../../mixins/search
+include ../../mixins/pagination
+include ../../mixins/form-change-multi
+include ../../mixins/alert
+include ../../mixins/moment
+
+block main
+  +alert-success(5000)
+  +alert-error(4000)
+  if(role.permission.includes("blogs_view"))
+    .container.mx-auto.px-4.py-8
+      .flex.justify-between.items-center.mb-8
+        h1.text-3xl.font-bold.text-gray-900 Quản lý Bài viết
+
+      .bg-white.rounded-lg.shadow-lg.mb-8.p-6
+        .grid.grid-cols-1(class="md:grid-cols-2 lg:grid-cols-4 gap-6")
+          each status in filterStatus
+            a(
+              href=`?status=${status.status}`
+              class=`p-4.rounded-lg transition-all ${currentStatus === status.status ? 'bg-blue-100 border-2 border-blue-500' : 'bg-gray-50 hover:bg-gray-100'}`
+            )
+              h3.text-lg.font-semibold.mb-2(class=currentStatus === status.status ? 'text-blue-800' : 'text-gray-700') #{status.label}
+              p.text-3xl.font-bold(class=currentStatus === status.status ? 'text-blue-600' : 'text-gray-600') #{status.count}
+
+      .bg-white.rounded-lg.shadow-lg.mb-8.p-6
+        .grid.grid-cols-1(class="md:grid-cols-2 gap-6")
+          .flex.items-center
+            form.w-full(action=``)
+              select#statusFilter.w-full.p-2.border.rounded-lg(
+                name="status"
+                onchange="this.form.submit()"
+              )
+                each status in filterStatus
+                  option(
+                    value=status.status
+                    selected=currentStatus === status.status
+                  ) #{status.label} (#{status.count})
+          +objectSearch(keyword)
+
+      .bg-white.rounded-lg.shadow-lg.mb-8.p-6
+        .flex.flex-col(class="md:flex-row justify-between items-start md:items-center mb-6")
+          if(role.permission.includes("blogs_create"))
+            a(
+              href=`${prefixAdmin}/blogs/create`
+              class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center"
+            )
+              i.fas.fa-plus.mr-2
+              | Thêm bài viết mới
+
+        .overflow-x-auto.rounded-lg
+          table.w-full.table-auto
+            thead.bg-gray-50
+              tr
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase.min-w-60 Bài viết
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase.min-w-60 Danh mục
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase Trạng thái
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase Lượt xem
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase Người tạo
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase Ngày tạo
+                th.p-4.text-left.text-sm.font-semibold.text-gray-700.uppercase Hành động
+
+            tbody.divide-y.divide-gray-200
+              each blog in Blogs
+                tr(class="hover:bg-gray-50 transition-colors")
+                  td.p-4
+                    .flex.items-center
+                      img(
+                        src=blog.thumbnail || "/admin/images/default-thumbnail.jpg",
+                        alt=blog.title,
+                        class="w-16 h-16 object-cover rounded-lg mr-4"
+                      )
+                      div
+                        h3.font-medium.text-gray-900.mb-1 #{blog.title}
+                        p.text-sm.text-gray-500.truncate.max-w-xs #{blog.content.replace(/<[^>]+>/g, "").substring(0, 100)}...
+                  td.p-4
+                    if blog.category_id
+                      span.bg-purple-100.text-purple-800.text-sm.px-3.py-1.rounded-full #{blog.category}
+                  td.p-4
+                    select.status-select.border.rounded.px-2.py-1(
+                      data-id=blog.id
+                      data-current=blog.status
+                      onchange="handleStatusChange(this)"
+                    )
+                      if(role.permission.includes("blogs_confirm"))
+                        option(value="draft" selected=blog.status === 'draft') Nháp
+                        option(value="published" selected=blog.status === 'published') Đã xuất bản
+                        option(value="archived" selected=blog.status === 'archived') Lưu trữ
+                      else
+                        option(value="draft" selected=blog.status === 'draft' disabled) Nháp
+                        option(value="published" selected=blog.status === 'published' disabled) Đã xuất bản
+                        option(value="archived" selected=blog.status === 'archived' disabled) Lưu trữ
+                  td.p-4.text-blue-600.font-medium #{blog.views.toLocaleString()}
+                  td.p-4
+                    .flex.flex-col
+                      span.font-medium #{blog.account.fullName}
+                      span.text-sm.text-gray-500 #{blog.account.email}
+                  td.p-4
+                    +formatDateTime(blog.createdAt)
+                  td.p-4
+                    .flex.items-center.space-x-4
+                      a(
+                        href=`${prefixAdmin}/blogs/detail/${blog.id}`,
+                        class="text-blue-600 hover:text-blue-900",
+                        title="Xem chi tiết"
+                      )
+                        i.fas.fa-eye.text-lg
+                      if(role.permission.includes("blogs_edit"))
+                        a(
+                          href=`${prefixAdmin}/blogs/edit/${blog.id}`,
+                          class="text-yellow-600 hover:text-yellow-900",
+                          title="Chỉnh sửa"
+                        )
+                          i.fas.fa-edit.text-lg
+                      if(role.permission.includes("blogs_delete"))
+                        button(
+                          class="text-red-600 hover:text-red-900 delete-button",
+                          data-id=blog.id,
+                          title="Xóa bài viết"
+                        )
+                          i.fas.fa-trash.text-lg
+
+      +pagination(pagination)
+
+      form#form-change-status(
+        action="" 
+        method="POST"
+        data-path=`${prefixAdmin}/blogs/change-status`
+      )
+      form#form-delete-item(
+        action="" 
+        method="POST"
+        data-path=`${prefixAdmin}/blogs/delete`
+      )
+
+  script.
+    function handleStatusChange(select) {
+      const blogId = select.dataset.id;
+      const newStatus = select.value;
+      const form = document.getElementById('form-change-status');
+      form.action = `${form.dataset.path}/${blogId}?status=${newStatus}`;
+      form.submit();
+    }
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+      button.addEventListener('click', function() {
+        const blogId = this.dataset.id;
+        if(confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+          const form = document.getElementById('form-delete-item');
+          form.action = `${form.dataset.path}/${blogId}?_method=DELETE`;
+          form.submit();
+        }
+      });
+    });

@@ -1,0 +1,102 @@
+extends ../../layouts/default.pug
+include ../../mixins/search
+include ../../mixins/pagination
+include ../../mixins/form-change-multi
+include ../../mixins/alert
+include ../../mixins/moment
+block main
+  +alert-success(5000)
+  +alert-error(4000)
+  if(role.permission.includes("discounts_create"))
+    .container.mx-auto.p-4
+      h1.text-2xl.font-bold.mb-6 Tạo mã giảm giá mới
+
+      form(action=`${prefixAdmin}/discounts/create` method="POST")
+        div(class=" grid grid-cols-1 md:grid-cols-2 gap-6")
+          .space-y-4
+            .form-group
+              label.block.mb-2.font-semibold(for="title") Mã giảm giá *
+              input#title.w-full.p-2.border.rounded(type="text" name="title" required)
+
+            .form-group
+              label.block.mb-2.font-semibold(for="description") Mô tả
+              textarea#description.w-full.p-2.border.rounded(name="description" rows=3)
+
+            .form-group
+              label.block.mb-2.font-semibold(for="discount_type") Loại giảm giá *
+              select#discount_type.w-full.p-2.border.rounded(name="discount_type" required)
+                option(value="category") Theo danh mục
+                option(value="product") Theo sản phẩm
+                option(value="order_amount") Theo tổng đơn hàng
+
+            #category-select.form-group.hidden
+              label.block.mb-2.font-semibold(for="category_id") Danh mục
+              select#category_id.w-full.p-2.border.rounded(name="category_id")
+                each category in categories
+                  option(value=category._id)= category.title
+
+            #product-select.form-group.hidden
+              label.block.mb-2.font-semibold(for="product_id") Sản phẩm
+              select#product_id.w-full.p-2.border.rounded(name="product_id")
+                each product in products
+                  option(value=product._id)= product.title
+
+            #order-amount.form-group.hidden
+              label.block.mb-2.font-semibold(for="order_amount") Tổng đơn hàng tối thiểu
+              input#order_amount.w-full.p-2.border.rounded(type="number" name="order_amount")
+
+          .space-y-4
+            .form-group
+              label.block.mb-2.font-semibold(for="discount_value") Giá trị giảm *
+              input#discount_value.w-full.p-2.border.rounded(type="number" step="0.01" name="discount_value" required)
+
+            .form-group
+              label.block.mb-2.font-semibold(for="discount_unit") Đơn vị *
+              select#discount_unit.w-full.p-2.border.rounded(name="discount_unit" required)
+                option(value="percentage") Phần trăm (%)
+                option(value="fixed") Tiền mặt (₫)
+
+            .form-group
+              label.block.mb-2.font-semibold(for="start_date") Ngày bắt đầu *
+              input#start_date.w-full.p-2.border.rounded(type="datetime-local" name="start_date" required)
+
+            .form-group
+              label.block.mb-2.font-semibold(for="end_date") Ngày kết thúc *
+              input#end_date.w-full.p-2.border.rounded(type="datetime-local" name="end_date" required)
+
+            .form-group
+              label.block.mb-2.font-semibold(for="usage_limit") Giới hạn sử dụng
+              input#usage_limit.w-full.p-2.border.rounded(type="number" name="usage_limit")
+
+            .form-group
+              label.block.mb-2.font-semibold(for="status") Trạng thái
+              select#status.w-full.p-2.border.rounded(name="status")
+                option(value="active") Hoạt động
+                option(value="inactive") Tạm dừng
+
+        .mt-6
+          button(type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center w-full md:w-auto")
+            i.fa.fa-save.mr-2
+            | Tạo mã giảm giá
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      const discountType = document.getElementById('discount_type');
+      const categorySelect = document.getElementById('category-select');
+      const productSelect = document.getElementById('product-select');
+      const orderAmount = document.getElementById('order-amount');
+
+      function toggleFields() {
+        const value = discountType.value;
+        categorySelect.classList.add('hidden');
+        productSelect.classList.add('hidden');
+        orderAmount.classList.add('hidden');
+
+        if (value === 'category') categorySelect.classList.remove('hidden');
+        if (value === 'product') productSelect.classList.remove('hidden');
+        if (value === 'order_amount') orderAmount.classList.remove('hidden');
+      }
+
+      discountType.addEventListener('change', toggleFields);
+      toggleFields();
+    });

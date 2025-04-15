@@ -1,0 +1,51 @@
+extends ../../layouts/default.pug
+
+block main
+  div(class="max-w-3xl mx-auto p-6 space-y-6")
+    div(class="text-center md:text-left border-b pb-4")
+      h1(class="text-4xl font-extrabold text-gray-900 mb-2") Thông tin cá nhân
+    
+    div(class="bg-white rounded-2xl shadow-lg p-8 transition hover:shadow-xl")
+      div(class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8")
+        div(class="relative")
+          if (user.avatar)
+            img(
+              src=user.avatar 
+              class="w-36 h-36 rounded-full border-4 border-gray-300 shadow-lg object-cover hover:scale-105 transition-transform"
+              alt="Avatar"
+            )
+          else
+            img(
+              src="/admin/images/avatar.png" 
+              class="w-36 h-36 rounded-full border-4 border-gray-300 shadow-lg object-cover hover:scale-105 transition-transform"
+              alt="Default avatar"
+            )
+        
+        div(class="space-y-5 w-full")
+          div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+            div
+              span(class="text-gray-500 font-semibold uppercase text-sm") Họ tên
+              p(class="text-lg font-medium text-gray-900") #{user.fullName || 'Chưa cập nhật'}
+            div
+              span(class="text-gray-500 font-semibold uppercase text-sm") Email
+              p(class="text-lg font-medium text-gray-900") #{user.email || 'Chưa cập nhật'}
+            div
+              span(class="text-gray-500 font-semibold uppercase text-sm") Số điện thoại
+              p(class="text-lg font-medium text-gray-900") #{user.phone || 'Chưa cập nhật'}
+            div
+              span(class="text-gray-500 font-semibold uppercase text-sm mr-2") Trạng thái
+              span(class=`px-3 py-1 rounded-full text-sm font-semibold 
+                    ${user.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`)
+                | #{user.status === "active" ? "Hoạt động" : "Dừng hoạt động"}
+            if (role.title)
+              div
+                span(class="text-gray-500 font-semibold uppercase text-sm") Phân quyền
+                p(class="text-lg font-medium text-gray-900") #{role.title}
+    
+    div(class="flex justify-center md:justify-start mt-6")
+      a(
+        href=`${prefixAdmin}/my-account/edit`
+        class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-md transform hover:scale-105 transition-all flex items-center"
+      )
+        i(class="fas fa-edit mr-2")
+        | Chỉnh sửa thông tin

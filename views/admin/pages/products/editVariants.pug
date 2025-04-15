@@ -1,0 +1,252 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
+
+block main
+  +alert-error(4000)
+
+  if(role.permission.includes("products_edit"))
+    .max-w-4xl.mx-auto.p-6.bg-white.rounded-lg.shadow-md
+      h1.text-2xl.font-bold.mb-6.text-gray-700 Chỉnh sửa sản phẩm có biến thể
+
+      form(
+        action=`${prefixAdmin}/products/edit-variants/${product._id}?_method=PATCH`
+        id="form-edit-product"
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-4"
+      )
+        .field(class="space-y-2")
+          label(class="block text-sm font-medium text-gray-700" for="title") Tiêu đề
+          input(
+            class="w-full px-4 py-3 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
+            type="text" 
+            name="title" 
+            id="title" 
+            value=product.title
+            required
+          )
+        
+        .field(class="space-y-2")
+          label(class="block text-sm font-medium text-gray-700" for="product_category_id") Danh mục
+          select(
+            class="w-full px-4 py-3 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
+            name="product_category_id" 
+            id="product_category_id"
+          )
+            option(value="") -- Chọn danh mục --
+            if(category)
+              +select-tree(category, 1,product.product_category_id)
+
+        .field(class="space-y-2")
+          label(class="block text-sm font-bold text-gray-700") Trạng thái nổi bật
+          .flex.items-center.space-x-6
+            .flex.items-center
+              input(
+                class="h-5 w-5 text-indigo-600 border-gray-300" 
+                type="radio" 
+                name="featured" 
+                value="1" 
+                id="featured1"
+                checked=product.featured === "1"
+              )
+              label(class="ml-2 text-sm text-gray-700" for="featured1") Nổi bật
+            .flex.items-center
+              input(
+                class="h-5 w-5 text-indigo-600 border-gray-300" 
+                type="radio" 
+                name="featured" 
+                value="0" 
+                id="featured0" 
+                checked=product.featured === "0"
+              )
+              label(class="ml-2 text-sm text-gray-700" for="featured0") Không
+        
+        .field(class="space-y-2")
+          label(class="block text-sm font-medium text-gray-700" for="status") Trạng Thái
+          select(
+            class="w-full px-4 py-3 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
+            name="status" 
+            id="status"
+          )
+            option(value="active" selected=product.status === "active") Hoạt Động
+            option(value="inactive" selected=product.status === "inactive") Không Hoạt Động
+            
+        .field(class="space-y-2")
+          label(class="block text-sm font-medium text-gray-700" for="position") Vị Trí
+          input(
+            class="w-full px-4 py-3 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
+            type="number" 
+            name="position" 
+            id="position" 
+            value=product.position
+            min="0"
+          )
+        
+        .field(class="space-y-2")
+          label(class="block text-sm font-medium text-gray-700" for="desc") Mô tả
+          textarea(
+            class="w-full px-4 py-3 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
+            name="description" 
+            id="desc" 
+            rows="4"
+          ) #{product.description}
+
+        .field(class="space-y-2")
+          input(edit class="hidden" value=product.thumbnail)
+          label(class="block text-sm font-medium text-gray-700" for="thumbnail") Ảnh sản phẩm (Ảnh ở vị trí số 0 sẽ là avatar)
+          input(type="hidden" name="deletedThumbnails" id="deletedThumbnails")
+          .flex.flex-col.space-y-2
+            input(
+              class="hidden"
+              type="file"
+              name="thumbnail"
+              id="thumbnail"
+              accept="image/*"
+              multiple
+              onchange="handleFileSelect(this)"
+            )
+            label(
+              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors w-fit"
+              for="thumbnail"
+            )
+              i(class="fas fa-camera mr-2")
+              span Chọn ảnh
+            
+            #preview-container(class="grid grid-cols-3 gap-4 mt-2")
+              each img, index in product.thumbnail
+                div(class="preview-item relative group overflow-hidden rounded-lg border border-gray-200 hover:shadow-md transition-shadow")
+                  .absolute.top-2.left-2.bg-gray-800.bg-opacity-75.text-white.rounded-full.w-6.h-6.flex.items-center.justify-center.text-xs.font-bold.index-number #{index}
+                  img(
+                    class="w-full h-40 object-cover"
+                    src=img
+                    alt="Preview image"
+                  )
+                  button(
+                    type="button"
+                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onclick="removeImage(this, true)"
+                    title="Xóa ảnh"
+                    data-src=img
+                  )
+                    i(class="fas fa-times text-xs")
+              template#preview-template
+                div(class="preview-item relative group overflow-hidden rounded-lg border border-gray-200 hover:shadow-md transition-shadow")
+                  .absolute.top-2.left-2.bg-gray-800.bg-opacity-75.text-white.rounded-full.w-6.h-6.flex.items-center.justify-center.text-xs.font-bold.index-number
+                  img(
+                    class="w-full h-40 object-cover"
+                    alt="Preview image"
+                  )
+                  button(
+                    type="button"
+                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onclick="removeImage(this)"
+                    title="Xóa ảnh"
+                  )
+                    i(class="fas fa-times text-xs")
+
+            .text-red-500.text-sm.mt-1#file-error
+
+        //- Phần biến thể
+        .space-y-4
+          h2.text-xl.font-semibold.text-gray-800 Biến thể sản phẩm
+          #variants-container.space-y-4
+            each variant, variantIndex in product.variants
+              .variant-item.border.p-4.rounded-lg
+                .flex.justify-between.items-center.mb-2
+                  h3.text-lg.font-medium.text-gray-700 Biến thể ##{variantIndex + 1}
+                  button(
+                    class="text-red-500 hover:text-red-700" 
+                    type="button" 
+                    onclick="removeVariant(this)"
+                  )
+                    i.fas.fa-times
+                
+                .space-y-3
+                  .space-y-2
+                    label.block.text-sm.font-medium.text-gray-700 Tên biến thể (VD: Màu sắc)
+                    input.w-full.px-3.py-2.border.rounded-md(
+                      type="text"
+                      name=`variants[${variantIndex}][name]`
+                      value=variant.name
+                      required
+                      placeholder="Nhập tên biến thể"
+                    )
+                  
+                  .space-y-2
+                    label.block.text-sm.font-medium.text-gray-700 Các giá trị
+                    #values-container.space-y-2
+                      each value, valueIndex in variant.value
+                      
+                        div(class="value-item flex flex-wrap md:flex-nowrap items-center gap-2")
+                          input(
+                            class="w-full md:w-auto flex-1 px-3 py-2 border rounded-md"
+                            type="text"
+                            name=`variants[${variantIndex}][value][${valueIndex}][value]`
+                            value=value.value
+                            placeholder="Giá trị (VD: Đỏ)"
+                            required
+                          )
+                          input(
+                            class="w-full md:w-28 px-3 py-2 border rounded-md"
+                            type="number"
+                            name=`variants[${variantIndex}][value][${valueIndex}][stock]`
+                            value=value.stock
+                            placeholder="Số lượng"
+                            min="0"
+                            required
+                          )
+                          input(
+                            class="w-full md:w-28 px-3 py-2 border rounded-md"
+                            type="number"
+                            name=`variants[${variantIndex}][value][${valueIndex}][price]`
+                            value=value.price
+                            placeholder="Giá"
+                            min="0"
+                            required
+                          )
+                          input(
+                            class="w-full md:w-32 px-3 py-2 border rounded-md"
+                            type="number"
+                            name=`variants[${variantIndex}][value][${valueIndex}][discountPercentage]`
+                            value=value.discountPercentage
+                            placeholder="%Giảm giá"
+                            min="0"
+                            required
+                          )
+                          input(
+                            class="w-full md:w-52 px-3 py-2 border rounded-md"
+                            type="number"
+                            name=`variants[${variantIndex}][value][${valueIndex}][thumbnailPosition]`
+                            value=value.thumbnailPosition
+                            placeholder="Vị trí ảnh trong thumbnail"
+                            min="0"
+                            required
+                          )
+                          button(
+                            class="text-red-500 hover:text-red-700" 
+                            type="button" 
+                            onclick="removeValue(this)"
+                          )
+                            i.fas.fa-times
+                    button(
+                      class="mt-2 text-sm text-indigo-600 hover:text-indigo-800"
+                      type="button" 
+                      onclick="addValue(this)"
+                    ) Thêm giá trị
+
+          //- button(
+          //-   class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+          //-   type="button" 
+          //-   onclick="addVariant()"
+          //- ) Thêm biến thể
+
+        //- Nút submit
+        .pt-4
+          button(
+            class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+            type="submit"
+          ) Cập nhật sản phẩm
+
+  script(src="/admin/js/product.js")
+  

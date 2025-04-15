@@ -1,0 +1,47 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/box-head.pug
+
+block main
+  +box-head("Đặt hàng thành công")
+  
+  .container.mx-auto.my-5.px-4
+    .bg-white.rounded-lg.shadow-md.p-6
+      +alert-success(5000)
+      +alert-error(5000)
+
+      .text-center.mb-6
+        i.fas.fa-check-circle.text-6xl.text-green-500
+
+      //- Hiển thị QR Code
+      if qrCode
+        .qr-code.text-center.mb-6
+          h3.text-xl.font-semibold.mb-4 Quét QR Code để thanh toán
+          img(src=qrCode alt="QR Code" class="mx-auto w-48 h-48")
+          p.text-gray-600.mt-2 Sử dụng ứng dụng Mobile Banking để quét mã
+
+      //- Thông tin đơn hàng
+      .order-info.mb-6
+        h3.text-xl.font-semibold.mb-4 Thông tin đơn hàng
+        div(class=" grid grid-cols-1 md:grid-cols-2 gap-4")
+          div
+            p
+              span.font-semibold Mã đơn hàng: 
+              | #{order._id}
+            p
+              span.font-semibold Tổng tiền: 
+              | #{order.totalPrice.toLocaleString()}đ
+          div
+            p
+              span.font-semibold Ngày đặt hàng: 
+              | #{order.createdAt.toLocaleDateString()}
+            p
+              span.font-semibold Trạng thái: 
+              span(class=order.status === 1 ? "text-green-500" : "text-red-500") 
+                | #{order.status === 1 ? "Đang xử lý" : "Đã hủy"}
+
+      //- Nút quay lại
+      .text-center
+        a(href="/" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg transition duration-300")
+          i.fas.fa-home.mr-2
+          | Về trang chủ

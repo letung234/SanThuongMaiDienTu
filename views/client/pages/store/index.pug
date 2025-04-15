@@ -1,0 +1,60 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+include ../../mixins/sub.pug
+include ../../mixins/product-layout.pug
+include ../../../admin/mixins/pagination.pug
+
+block main
+  .container.mx-auto.px-4
+    .text-center.mb-8
+      img(src=ncc.cover, alt="Cover Image", class="w-full  object-cover my-4")
+      h1.text-3xl.font-bold Chào Mừng Đến Với Cửa Hàng #{ncc.fullName}
+      p.text-lg.text-gray-700 !{ncc.description}
+
+    div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8")
+      .row.flex.items-start
+        .bg-white.p-4.shadow-lg.rounded-lg
+          img(src=ncc.avatar, alt="Avatar", class="w-full h-64 object-cover rounded-lg mb-4")
+          h2.text-2xl.font-semibold #{ncc.fullName}
+          p.text-sm.text-gray-500 #{ncc.email}
+          p.text-sm.text-gray-500 #{ncc.phone}
+          if(user)
+            a(
+              href=`/admin/chat/${roomChat.id}`
+              class="fixed bottom-4 right-4 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 animate-bounce z-[999999999999]"
+            )
+              i.fas.fa-comment-dots.text-lg
+              span.font-semibold Nhắn tin
+          else 
+            .fixed.bottom-4.right-4.bg-yellow-100.border-l-4.border-yellow-500.text-yellow-700.p-4.rounded-lg.shadow-lg(class="w-[320px] z-[999999999999]")
+              p.flex.items-center.gap-2
+                i.fas.fa-exclamation-circle.text-xl
+                span.font-medium Đăng nhập để chat với người bán
+      div(class="col-span-3")
+        +box-head("Danh Mục Sản Phẩm")
+        +sub(category)
+        +box-head("Sản Phẩm Nổi Bật")
+        +product-grid(productFeatured)
+        +box-head("Sản Phẩm")
+        if(products.length > 0)
+          +product-grid(products)
+          div(class="w-full mt-2")
+              +pagination(pagination)
+        else
+          div(class="min-h-[400px] flex flex-col items-center justify-center text-center py-8 px-4 w-full")
+            div(class="mb-6 text-gray-400")
+              i(class="fas fa-exclamation-circle text-6xl")
+            
+            h3(class="text-xl font-semibold text-gray-600 mb-2") Không tìm thấy sản phẩm phù hợp
+            p(class="text-gray-500 mb-6 max-w-md mx-auto") Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với tiêu chí tìm kiếm của bạn. Vui lòng thử lại với từ khóa khác.
+            
+            a(
+              href="/products" 
+              class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all duration-300"
+            )
+              i(class="fas fa-arrow-left mr-2")
+              span Quay lại cửa hàng
+    
+
+
+  

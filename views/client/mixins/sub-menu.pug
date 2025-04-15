@@ -1,0 +1,28 @@
+mixin sub-menu(items, path)
+  div(class="slider-container group relative w-full overflow-hidden bg-white p-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500")
+    div(class="slider-wrapper flex gap-8 transition-transform duration-700 ease-[cubic-bezier(0.33,1,0.68,1)]")
+      each item in items   
+        div(class="slider-item flex-shrink-0 w-72 transform transition-opacity duration-300 hover:opacity-100")
+          a(href=`${path}/${item.slug}` class="block group/card rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500")
+            div(class="relative aspect-video")
+              img(
+                src=item.thumbnail 
+                alt=item.title 
+                class="w-full h-full object-cover transform transition-transform duration-500 group-hover/card:scale-110"
+              )
+              div(class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent")
+              div(class="absolute bottom-0 left-0 w-full p-5 space-y-2")
+                h3(class="text-2xl font-bold text-white tracking-tight leading-tight") #{item.title}
+                if item.subtitle
+                  p(class="text-gray-300 font-medium text-sm") #{item.subtitle}
+    
+    div(class="slider-controls absolute inset-0 flex justify-between items-center pointer-events-none px-4")
+      button(class="prev w-12 h-12 flex items-center justify-center bg-black/80 text-white rounded-full shadow-xl hover:bg-black/90 hover:scale-105 focus:outline-none pointer-events-auto transition-all duration-300 group/btn")
+        i(class="fas fa-chevron-left text-lg group-hover/btn:-translate-x-0.5 transition-transform")
+      button(class="next w-12 h-12 flex items-center justify-center bg-black/80 text-white rounded-full shadow-xl hover:bg-black/90 hover:scale-105 focus:outline-none pointer-events-auto transition-all duration-300 group/btn")
+        i(class="fas fa-chevron-right text-lg group-hover/btn:translate-x-0.5 transition-transform")
+
+    //- Progress dots
+    div(class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2" id="product-category-slider")
+      each _, index in items
+        div(class="w-3 h-3 bg-white/30 rounded-full transition-all duration-300 hover:bg-white/50 cursor-pointer" data-index=index)

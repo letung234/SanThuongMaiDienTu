@@ -1,0 +1,11 @@
+const express = require("express");
+const router = express.Router();
+const multer = require("multer");
+const asyncWrapper = require("../../helpers/asyncWrapper");
+const upload = multer();
+const uploadStream = require("../../middlewares/admin/uploadCloud.middleware");
+const controller = require("../../controllers/admin/order.controller");
+router.get("/", asyncWrapper(controller.index));
+router.get("/detail/:id", asyncWrapper(controller.detail));
+router.patch("/update-status/:id", asyncWrapper(controller.updateOrderStatus));
+module.exports = router;

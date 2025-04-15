@@ -1,0 +1,5 @@
+mixin variant-price(variant)
+  .flex.items-center.text-sm
+    span.mr-2 #{variant.price.toLocaleString()}₫
+    if variant.discountPercentage > 0
+      span.text-red-500 (#{variant.discountPercentage}% giảm)

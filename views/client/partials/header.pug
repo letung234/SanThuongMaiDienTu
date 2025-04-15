@@ -1,0 +1,93 @@
+header(class="bg-gradient-to-r from-[#ee4d2d] to-[#ff7337] shadow-lg")
+  .container(class="mx-auto px-4")
+    .flex(class="flex-col md:flex-row justify-between items-center py-1")
+      .w-full(class="md:w-auto flex justify-between items-center")
+        a(href='/', class="flex items-center")
+          img(class="h-24  w-32  sm:w-40 object-contain transition duration-300 hover:scale-105", src=settingGeneral.logo, alt=settingGeneral.websiteName)
+        button#mobileMenuButton(class="md:hidden text-white text-2xl focus:outline-none")
+          i(class="fas fa-bars")
+      
+      form(action='/search', method='GET', class="w-full md:w-1/2 mt-4 md:mt-0 md:mx-6 ")
+         .relative
+            input(class="w-full pl-10 pr-4 py-2 rounded-full border-2 border-gray-100 focus:border-transparent focus:outline-none focus:ring-0 bg-white bg-opacity-90 transition-all duration-300", type='text', placeholder='Tìm kiếm sản phẩm...', name='keyword', value=keyword)
+            i(class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400")
+            button(type="submit", class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-orange-500 text-white px-3 py-1 rounded-full hover:bg-orange-600")
+               i(class="fas fa-search")
+
+      
+      #rightNav(class="hidden md:flex items-center space-x-6")
+        a(href='/cart', class="relative flex items-center text-white hover:text-gray-200 transition-colors")
+          i(class="fas fa-shopping-cart text-xl")
+          span(class="ml-2 hidden sm:inline") Giỏ hàng
+          span(class="absolute -top-2 left-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs cart-count") #{miniCart ? miniCart.totalQuantity : 0}
+      
+        .relative
+          if user
+            button#userMenuButton(class="flex items-center text-white space-x-2 focus:outline-none")
+              i(class="fas fa-user-circle text-xl")
+              span(class="hidden sm:inline") #{user.fullName}
+              i(class="fas fa-chevron-down text-xs mt-1")
+            
+            #userDropdown(class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 hidden")
+              a(href='/user/info', class="block px-4 py-2 text-gray-800 hover:bg-orange-100") Tài khoản
+              a(href='/checkout/history', class="block px-4 py-2 text-gray-800 hover:bg-orange-100") Đơn hàng
+              a(href='/messages', class="block px-4 py-2 text-gray-800 hover:bg-orange-100") Nhắn tin
+              //- a(href='/rooms-chat', class="block px-4 py-2 text-gray-800 hover:bg-orange-100") Phòng chat
+              a(href='/user/logout', class="block px-4 py-2 text-gray-800 hover:bg-orange-100") Đăng xuất
+          else
+            a(href='/user/login', class="flex items-center text-white hover:text-gray-200")
+              i(class="fas fa-sign-in-alt text-xl")
+              span(class="ml-2 hidden sm:inline") Đăng nhập
+    
+    #mobileMenu(class="md:hidden hidden  mt-4 mb-2")
+      ul(class="flex flex-col space-y-5 text-white")
+         //- Menu Giỏ hàng
+         li
+            a(href='/cart' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+               i(class="fas fa-shopping-cart text-xl w-8 mr-3 text-orange-400 group-hover:text-orange-500 transition-colors")
+               span(class="flex-1") Giỏ hàng
+               i(class="fas fa-chevron-right text-sm opacity-70 ml-3")
+
+         //- Menu người dùng
+         if user
+            //- Tài khoản
+            li
+            a(href='/user/info' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+               i(class="fas fa-user-circle text-xl w-8 mr-3 text-blue-400 group-hover:text-blue-500")
+               span(class="flex-1") Tài khoản
+               i(class="fas fa-chevron-right text-sm opacity-70 ml-3")
+            //- Đơn hàng
+            li
+            a(href='/checkout/history' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+               i(class="fas fa-user-circle text-xl w-8 mr-3 text-blue-400 group-hover:text-blue-500")
+               span(class="flex-1") Đơn hàng
+               i(class="fas fa-chevron-right text-sm opacity-70 ml-3")
+
+            //- Bạn bè
+            li
+            a(href='/messages' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+               i(class="fas fa-users text-xl w-8 mr-3 text-green-400 group-hover:text-green-500")
+               span(class="flex-1") Nhắn tin
+               i(class="fas fa-chevron-right text-sm opacity-70 ml-3")
+
+            //- //- Phòng chat
+            //- li
+            //- a(href='/rooms-chat' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+            //-    i(class="fas fa-comments text-xl w-8 mr-3 text-purple-400 group-hover:text-purple-500")
+            //-    span(class="flex-1") Phòng chat
+            //-    i(class="fas fa-chevron-right text-sm opacity-70 ml-3")
+
+            //- Đăng xuất
+            li
+            a(href='/user/logout' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+               i(class="fas fa-sign-out-alt text-xl w-8 mr-3 text-red-400 group-hover:text-red-500")
+               span(class="flex-1") Đăng xuất
+               i(class="fas fa-chevron-right text-sm opacity-70 ml-3")
+
+         else
+            //- Đăng nhập
+            li
+            a(href='/user/login' class="flex items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 group")
+               i(class="fas fa-sign-in-alt text-xl w-8 mr-3 text-blue-400 group-hover:text-blue-500")
+               span(class="flex-1") Đăng nhập
+               i(class="fas fa-chevron-right text-sm opacity-70 ml-3")

@@ -1,0 +1,159 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+include ../../mixins/product-layout.pug
+include ../../mixins/blog-card.pug
+include ../../mixins/category-card.pug
+include ../../mixins/sub-menu.pug
+include ../../../admin/mixins/moment.pug
+
+block main
+  section.slider-section(class="h-[400px] md:h-[600px] mt-3 rounded-lg overflow-hidden")
+    .swiper.mySwiper.h-full
+      .swiper-wrapper.h-full
+        each product in sliderProducts
+          .swiper-slide
+            .slide-inner
+              img(
+                src=product.thumbnail[0]
+                alt=product.title
+                class="slide-image object-cover"
+              )
+              .slide-overlay
+                .slide-content
+                  h2.slide-title= product.title
+                  a.slide-button(href=`/products/detail/${product.slug}`) Xem ngay
+      .swiper-button-next
+      .swiper-button-prev
+
+  section.py-12.bg-gray-50
+    .container.mx-auto.px-4
+      +box-head("Danh mục sản phẩm")
+      +sub-menu(layoutProductsCategory, "/products/")
+
+  section.py-12
+    .container.mx-auto.px-4
+      +box-head("Sản phẩm nổi bật")
+      +product-grid(productFeatured)
+
+  section.py-12
+    .container.mx-auto.px-4
+      .promotion-banner.bg-gradient-to-r.from-primary.to-secondary.rounded-xl.overflow-hidden
+        div(class=" flex flex-col md:flex-row items-center")
+          div(class=" p-8 md:p-12 md:w-1/2 text-white")
+            h2(class=" text-3xl md:text-4xl font-bold mb-4") Khuyến mãi đặc biệt
+            p(class=" text-lg md:text-xl mb-6") Giảm giá lên đến 50% cho các sản phẩm mới
+            a(
+              href="/products"
+              class="inline-block bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all"
+            ) Xem ngay
+          div(class="md:w-1/2")
+            img(
+              class="w-full h-full object-cover"
+              src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/5d/6b/5d6bff1e12d268904e9b919826e121a0.png"
+              alt="Banner"
+              loading="lazy"
+              style="min-height: 300px"
+            )
+
+  section.py-12.bg-gray-50
+    .container.mx-auto.px-4
+      +box-head("Sản phẩm mới")
+      +product-grid(newProductsNew)
+
+  section.py-12
+    .container.mx-auto.px-4
+      +box-head("Bài viết mới")
+      .blog-slider.relative
+        .swiper.blogSwiper
+          .swiper-wrapper
+            each blog in recentBlogs
+              .swiper-slide
+                .bg-white.rounded-xl.shadow-md.overflow-hidden.hover-shadow-lg.transition-all.duration-300
+                  a(href=`/blogs/${blog.slug}` class="block h-full")
+                    img(
+                      src=blog.thumbnail
+                      alt=blog.title
+                      class="w-full h-48 object-cover"
+                    )
+                    .p-6
+                      h3.font-bold.text-xl.mb-2.text-gray-800(class="h-[43px]")= blog.title
+                      .text-sm.mb-4.text-gray-500
+                        | #{blog.createdBy.fullName} 
+                        +formatDate(blog.createdAt)
+                      .prose.text-gray-600.text-sm.mb-4(class="h-[40px]")
+                        | !{blog.content.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                      .flex.items-center.text-primary.font-medium
+                        | Xem thêm
+                        i.fas.fa-arrow-right.ml-2
+
+        //- Custom navigation buttons
+        div(class=" blog-swiper-button-prev absolute top-1/2 left-0 -translate-y-1/2 z-10 cursor-pointer bg-white rounded-full p-3 shadow-lg hover-shadow-xl transition-all")
+          i.fas.fa-chevron-left.text-gray-700
+        div(class=" blog-swiper-button-next absolute top-1/2 right-0 -translate-y-1/2 z-10 cursor-pointer bg-white rounded-full p-3 shadow-lg hover-shadow-xl transition-all")
+          i.fas.fa-chevron-right.text-gray-700
+
+  section.py-12.bg-gray-50
+    .container.mx-auto.px-4
+      +box-head("Nhà cung cấp")
+      div(class=" grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mt-8")
+        each supplier in suppliers
+          a(
+              href=`/store/${supplier.id}`
+              class="group flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1"
+          )
+              .relative.mb-3
+                img(
+                src=supplier.avatar
+                alt=supplier.fullName
+                class="h-20 w-20 rounded-full object-cover border-4 border-white ring-2 ring-blue-200 group-hover:ring-blue-400 transition-all"
+                )
+                .absolute.bottom-0.right-0.w-5.h-5.bg-green-400.rounded-full.border-2.border-white
+              h2(class=" text-center font-semibold text-gray-700 group-hover:text-blue-600 transition-colors truncate w-full")
+                | #{supplier.fullName}
+              p.text-sm.text-gray-500.text-center.mt-1 Nhà cung cấp
+
+
+
+block script
+  script.
+    const mainSwiper = new Swiper('.mySwiper', {
+      loop: true,
+      autoplay: {
+        delay: 2000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true
+      }
+    });
+
+    const blogSwiper = new Swiper('.blogSwiper', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.blog-swiper-button-next',  
+        prevEl: '.blog-swiper-button-prev', 
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 3,
+        }
+      }
+    });

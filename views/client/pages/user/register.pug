@@ -1,0 +1,52 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert-error(5000)
+
+  .container.my-5
+    .row.justify-content-center
+      .col-12
+        h1(class="text-center text-2xl font-semibold text-gray-700") Đăng ký tài khoản
+        form(
+          action="/user/register"
+          method="POST"
+          class="bg-white py-8 px-2  rounded-lg shadow-lg"
+        )
+          div(class="mb-6")
+            label(for="fullName" class="block text-gray-700 font-medium") Họ và tên
+            input(
+              type="text"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="fullName"
+              name="fullName"
+              required
+            )
+          div(class="mb-6")
+            label(for="email" class="block text-gray-700 font-medium") Email
+            input(
+              type="email"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="email"
+              name="email"
+              required
+            )
+          div(class="mb-6")
+            label(for="password" class="block text-gray-700 font-medium") Mật khẩu
+            input(
+              type="password"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="password"
+              name="password"
+              required
+            )
+          div(class="flex items-center justify-between mb-6")
+            button(
+              type="submit"
+              class="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+            ) Đăng ký
+          div(class="text-center")
+            a(
+              href="/user/login"
+              class="text-sm text-blue-500 hover:underline"
+            ) Đã có tài khoản? Đăng nhập

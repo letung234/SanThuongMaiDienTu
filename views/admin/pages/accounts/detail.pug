@@ -1,0 +1,108 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  if(role.permission.includes("accounts_view"))
+    div(class="bg-gray-100 min-h-screen p-4 md:p-6")
+      +alert-success(3000)
+
+      div(class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden")
+        if(data.cover)
+          div(class="h-48 bg-gray-200 md:h-64")
+            img(
+              src=data.cover
+              class="w-full h-full object-cover"
+              alt="Cover image"
+            )
+        
+        div(class="p-6 md:p-8")
+          div(class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8")
+            div(class="relative")
+              img(
+                src=data.avatar || "https://via.placeholder.com/150"
+                class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg"
+                alt="Avatar"
+              )
+              span(
+                class=`absolute bottom-0 right-0 rounded-full px-3 py-1 text-xs font-semibold 
+                  ${data.status === 'active' ? 'bg-green-500 text-white' : 
+                  data.status === 'inactive' ? 'bg-orange-500 text-white' : 
+                  'bg-red-500 text-white'}`
+              )= data.status
+
+            div(class="flex-1")
+              h1(class="text-2xl md:text-3xl font-bold text-gray-800 mb-2")= data.fullName
+              p(class="text-gray-600 mb-2") !{data.role.description}
+              div(class="flex items-center gap-4 text-gray-600")
+                if(data.email)
+                  div(class="flex items-center gap-1")
+                    i(class="fas fa-envelope")
+                    span= data.email
+                if(data.phone)
+                  div(class="flex items-center gap-1")
+                    i(class="fas fa-phone")
+                    span= data.phone
+
+          div(class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6")
+            div(class="space-y-4")
+              h2(class="text-xl font-semibold text-gray-800 mb-4") Thông tin cá nhân
+              div(class="space-y-2")
+                div(class="flex justify-between border-b pb-2")
+                  span(class="text-gray-600") Họ và tên:
+                  span(class="text-gray-800 font-medium")= data.fullName
+                if(data.email)
+                  div(class="flex justify-between border-b pb-2")
+                    span(class="text-gray-600") Email:
+                    span(class="text-gray-800 font-medium")= data.email
+                if(data.phone)
+                  div(class="flex justify-between border-b pb-2")
+                    span(class="text-gray-600") Số điện thoại:
+                    span(class="text-gray-800 font-medium")= data.phone
+                div(class="flex justify-between border-b pb-2")
+                  span(class="text-gray-600") Trạng Thái:
+                  span(
+                    class=`font-medium 
+                      ${data.status === 'active' ? 'text-green-600' : 
+                      data.status === 'inactive' ? 'text-orange-600' : 
+                      'text-red-600'}`
+                  )= data.status.charAt(0).toUpperCase() + data.status.slice(1)
+
+            //- Role Information
+            div(class="space-y-4")
+              h2(class="text-xl font-semibold text-gray-800 mb-4") Thông tin phân quyền
+              div(class="space-y-4")
+                div(class="flex justify-between items-start border-b pb-2")
+                  span(class="text-gray-600") Tên phân quyền:
+                  span(class="text-gray-800 font-medium")= data.role.title
+                
+                div(class="border-b pb-2")
+                  p(class="text-gray-600 mb-2") Các quyền:
+                  div(class="flex flex-wrap gap-2")
+                    each permission in data.role.permission
+                      span(
+                        class="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                      )= permission
+                
+                if(data.role.description)
+                  div(class="border-b pb-2")
+                    p(class="text-gray-600") Mô tả
+                    p(class="text-gray-800") !{data.role.description}
+
+          div(class="mt-6 pt-6 border-t text-sm text-gray-500")
+            div(class="flex flex-wrap gap-4")
+              if(data.createdAt)
+                div
+                  span Ngày tạo: 
+                  span= new Date(data.createdAt).toLocaleDateString()
+              if(data.updatedAt)
+                div
+                  span Cập nhập gần nhất: 
+                  span= new Date(data.updatedAt).toLocaleDateString()
+
+        div(class="px-6 md:px-8 pb-6 md:pb-8")
+          a(
+            href=`${prefixAdmin}/accounts/edit/${data._id}`
+            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+          )
+            i(class="fas fa-edit mr-2")
+            span Cập nhập tài khoản

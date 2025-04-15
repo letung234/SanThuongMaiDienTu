@@ -1,0 +1,7 @@
+mixin blog-card(blog)
+  div(class=" bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow")
+    a(href=`/blogs/${blog.slug}`)
+      img.w-full.h-48.object-cover(src=blog.thumbnail, alt=blog.title)
+      .p-4
+        h3.font-semibold.text-lg.mb-2= blog.title
+        p.text-gray-600.text-sm= blog.content.substring(0, 100) + '...'

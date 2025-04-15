@@ -1,0 +1,13 @@
+mixin select-tree(items, level = 1, parent_id = "")
+  each item in items
+    - const prefix = Array(level + 1).join("-- ")
+    - const paddingLeft = `${level * 1.5}rem`  
+    option(
+      value=item.id
+      selected=(item.id == parent_id ? true : false)
+      style=`padding-left: ${paddingLeft}` 
+      class="px-4 py-2 text-gray-700 hover:bg-gray-100 focus:bg-gray-100" 
+    )
+      | #{prefix}#{item.title}
+    if item.children && item.children.length > 0
+      +select-tree(item.children, level + 1, parent_id)

@@ -1,0 +1,121 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  div(class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl")
+    div(class="bg-white shadow-xl rounded-2xl overflow-hidden")
+      div(class="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-5")
+        h1(class="text-2xl font-bold text-white flex items-center gap-3")
+          i(class="fas fa-cog fa-spin")
+          | Cài đặt hệ thống
+      div(class="p-6 space-y-8")
+        +alert-error(5000)
+        +alert-success(5000)
+
+        form(
+          action=`${prefixAdmin}/settings/general?_method=PATCH`
+          method="POST"
+          enctype="multipart/form-data"
+          class="space-y-8 divide-y divide-gray-200"
+        )
+          div(class="space-y-8 divide-y divide-gray-200")
+            div(class="pt-8")
+              div(class="grid grid-cols-1 gap-6 md:grid-cols-2")
+                div(class="col-span-2")
+                  label(class="block text-sm font-medium text-gray-700 mb-2")
+                    i(class="fas fa-globe mr-2 text-blue-500")
+                    | Tên website
+                  div(class="mt-1 relative rounded-md shadow-sm")
+                    input(
+                      type="text"
+                      id="websiteName"
+                      name="websiteName"
+                      value=(settingGeneral ? settingGeneral.websiteName : "")
+                      class="block w-full px-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
+                      placeholder="Nhập tên website"
+                    )
+                div(class="col-span-2")
+                  label(class="block text-sm font-medium text-gray-700 mb-2")
+                    i(class="fas fa-image mr-2 text-blue-500")
+                    | Logo website
+                  div(class="mt-1 flex flex-col items-center space-y-4" upload-image)
+                    div(class="relative group cursor-pointer")
+                      input(
+                        type="file"
+                        id="logo"
+                        name="logo"
+                        accept="image/*"
+                        upload-image-input
+                        class="sr-only"
+                      )
+                      label( for="logo" class="cursor-pointer w-40 h-40 rounded-full border-4 border-dashed border-gray-200 group-hover:border-blue-300 transition-colors flex items-center justify-center overflow-hidden")
+                        img(
+                          src=(settingGeneral ? settingGeneral.logo : "")
+                          upload-image-preview
+                          class="w-full h-full object-cover"
+                        )
+                        div(class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity")
+                          i(class="fas fa-camera text-white text-2xl")
+                    span(class="text-sm text-gray-500") Nhấp để tải lên ảnh logo 
+            div(class="pt-8")
+              div(class="grid grid-cols-1 gap-6 md:grid-cols-2")
+                div
+                  label(class="block text-sm font-medium text-gray-700 mb-2")
+                    i(class="fas fa-phone mr-2 text-blue-500")
+                    | Số điện thoại
+                  div(class="mt-1 relative rounded-md shadow-sm")
+                    input(
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value=(settingGeneral ? settingGeneral.phone : "")
+                      class="block w-full px-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      placeholder="Nhập số điện thoại"
+                    )
+                div
+                  label(class="block text-sm font-medium text-gray-700 mb-2")
+                    i(class="fas fa-envelope mr-2 text-blue-500")
+                    | Địa chỉ email
+                  div(class="mt-1 relative rounded-md shadow-sm")
+                    input(
+                      type="email"
+                      id="email"
+                      name="email"
+                      value=(settingGeneral ? settingGeneral.email : "")
+                      class="block w-full px-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      placeholder="Nhập địa chỉ email"
+                    )
+                div(class="md:col-span-2")
+                  label(class="block text-sm font-medium text-gray-700 mb-2")
+                    i(class="fas fa-map-marker-alt mr-2 text-blue-500")
+                    | Địa chỉ
+                  div(class="mt-1 relative rounded-md shadow-sm")
+                    input(
+                      type="text"
+                      id="address"
+                      name="address"
+                      value=(settingGeneral ? settingGeneral.address : "")
+                      class="block w-full px-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      placeholder="Nhập địa chỉ"
+                    )
+                div(class="md:col-span-2")
+                  label(class="block text-sm font-medium text-gray-700 mb-2")
+                    i(class="fas fa-copyright mr-2 text-blue-500")
+                    | Thông tin bản quyền
+                  div(class="mt-1 relative rounded-md shadow-sm")
+                    input(
+                      type="text"
+                      id="copyright"
+                      name="copyright"
+                      value=(settingGeneral ? settingGeneral.copyright : "")
+                      class="block w-full px-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      placeholder="Nhập thông tin bản quyền"
+                    )
+            div(class="pt-8")
+              div(class="flex justify-end")
+                button(
+                  type="submit"
+                  class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:scale-105"
+                )
+                  i(class="fas fa-save mr-2")
+                  | Lưu cài đặt

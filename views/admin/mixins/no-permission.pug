@@ -1,0 +1,13 @@
+mixin alert-permission(path)
+  .min-h-screen.flex.items-center.justify-center.bg-gray-50.p-4
+    .text-center
+      .mb-4
+        i.fas.fa-ban.fa-3x.text-red-500
+      h2.text-2xl.font-bold.text-gray-800.mb-2 Bạn không có quyền truy cập!
+      p.text-gray-600.mb-6 Vui lòng liên hệ quản trị viên để được cấp quyền
+      a(
+        href=path
+        class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center transition-colors"
+      )
+        i.fas.fa-arrow-left.mr-2
+        | Quay lại trang trước

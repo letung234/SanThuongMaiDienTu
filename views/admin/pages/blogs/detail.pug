@@ -1,0 +1,63 @@
+extends ../../layouts/default.pug
+
+block main
+  if(role.permission.includes("blogs_view"))
+    article(class="max-w-4xl mx-auto px-4 py-8")
+      div(class="mb-8 rounded-xl overflow-hidden shadow-lg")
+        img(
+          src=blog.thumbnail 
+          alt=blog.title 
+          class="w-full h-96 object-cover"
+        )
+
+      header(class="mb-8")
+        div(class="flex items-center gap-2 mb-4")
+          if(blog.category_id)
+            a(
+              href=`/admin/blog-category/detail/${blog.category_id}`
+              class="px-4 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200"
+            )= blog.category
+
+          span(
+            class=`px-4 py-1 rounded-full text-sm ${
+              blog.status === 'published' ? 'bg-green-100 text-green-800' :
+              blog.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
+              'bg-red-100 text-red-800'
+            }`
+          )= blog.status === 'published' ? 'Đã xuất bản' : blog.status === 'draft' ? 'Bản nháp' : 'Lưu trữ'
+
+        h1(class="text-4xl font-bold mb-4")= blog.title
+
+        div(class="flex items-center text-gray-500 gap-4")
+          div(class="flex items-center")
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            | #{blog.account.fullName}
+
+          div(class="flex items-center")
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            | #{blog.createdBy.createdAt.toLocaleDateString()}
+
+          div(class="flex items-center")
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            | #{blog.views} lượt xem
+
+      div(class="prose max-w-none mb-8")
+        | !{blog.content}
+
+      if(role.permission.includes("blogs_edit"))
+        div(class="flex gap-4 border-t pt-6")
+          a(
+            href=`/admin/blogs/edit/${blog._id}`
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+          )
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+            </svg>
+            | Chỉnh sửa bài viết

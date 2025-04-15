@@ -1,0 +1,16 @@
+mixin sub(items, path)
+   ul(class="pl-4 border-l border-gray-300 space-y-2")
+      each item in items
+         li(class="relative group")
+            a(
+               href=`?keyword=${item.slug}` 
+               class="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+            )
+               img(src=item.thumbnail class="w-6 h-6 rounded-full object-cover")
+               span(class="truncate") #{item.title}
+               if item.children && item.children.length > 0
+                  i(
+                     class="fas fa-chevron-right text-sm text-gray-500 group-hover:text-blue-600 transform transition-transform duration-200 group-hover:translate-x-1"
+                  )
+            if item.children && item.children.length > 0
+               +sub(item.children, path)

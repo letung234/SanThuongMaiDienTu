@@ -1,0 +1,235 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert
+include ../../mixins/moment
+
+block main
+  +alert-success(5000)
+  +alert-error(4000)
+  if(role.permission.includes("discounts_edit"))
+    .container.mx-auto.p-6
+      .bg-white.rounded-lg.shadow-md.p-6
+        h1.text-3xl.font-bold.text-gray-800.mb-6
+          i.fas.fa-tag.mr-2
+          | Chỉnh sửa Mã Giảm Giá
+
+        form(action=`${prefixAdmin}/discounts/edit/${discount._id}?_method=PATCH` method="POST")
+          .grid.grid-cols-1.md.grid-cols-2.gap-6
+            .space-y-4
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-heading.mr-2
+                  | Mã giảm giá *
+                input.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  type="text",
+                  name="title",
+                  value=discount.title,
+                  required,
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )
+                small.text-red-500.hidden.error-message
+
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-align-left.mr-2
+                  | Mô tả
+                textarea.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  name="description",
+                  rows="3",
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )= discount.description
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-tags.mr-2
+                  | Loại giảm giá *
+                .relative
+                  select.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                    name="discount_type",
+                    id="discount_type",
+                    required,
+                    class="appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  )
+                    option(value="category" selected=discount.discount_type === 'category') Theo danh mục
+                    option(value="product" selected=discount.discount_type === 'product') Theo sản phẩm
+                    option(value="order_amount" selected=discount.discount_type === 'order_amount') Theo tổng đơn hàng
+                  .absolute.inset-y-0.right-0.flex.items-center.px-2.pointer-events-none
+                    i.fas.fa-chevron-down.text-gray-400
+              #category-select.form-group(class=discount.discount_type !== 'category' ? 'hidden' : '')
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-list.mr-2
+                  | Danh mục
+                .relative
+                  select.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                    name="category_id",
+                    class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  )
+                    each category in categories
+                      option(value=category._id selected=category._id === discount.category_id)= category.title
+                  .absolute.inset-y-0.right-0.flex.items-center.px-2.pointer-events-none
+                    i.fas.fa-chevron-down.text-gray-400
+
+              #product-select.form-group(class=discount.discount_type !== 'product' ? 'hidden' : '')
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-cube.mr-2
+                  | Sản phẩm
+                .relative
+                  select.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                    name="product_id",
+                    class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  )
+                    each product in products
+                      option(value=product._id selected=product._id === discount.product_id)= product.title
+                  .absolute.inset-y-0.right-0.flex.items-center.px-2.pointer-events-none
+                    i.fas.fa-chevron-down.text-gray-400
+
+              #order-amount.form-group(class=discount.discount_type !== 'order_amount' ? 'hidden' : '')
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-receipt.mr-2
+                  | Tổng đơn hàng tối thiểu
+                input.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  type="number",
+                  name="order_amount",
+                  value=discount.order_amount,
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )
+            .space-y-4
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-percent.mr-2
+                  | Giá trị giảm *
+                input.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  type="number",
+                  step="0.01",
+                  name="discount_value",
+                  value=discount.discount_value,
+                  required,
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )
+                small.text-red-500.hidden.error-message
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-ruler-combined.mr-2
+                  | Đơn vị *
+                .relative
+                  select.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                    name="discount_unit",
+                    required,
+                    class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  )
+                    option(value="percentage" selected=discount.discount_unit === 'percentage') Phần trăm (%)
+                    option(value="fixed" selected=discount.discount_unit === 'fixed') Tiền mặt (₫)
+                  .absolute.inset-y-0.right-0.flex.items-center.px-2.pointer-events-none
+                    i.fas.fa-chevron-down.text-gray-400
+
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-calendar-alt.mr-2
+                  | Ngày bắt đầu *
+                input#start_date.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  type="datetime-local",
+                  name="start_date",
+                  value=moment(discount.start_date).format('YYYY-MM-DDTHH:mm'),
+                  required,
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )
+
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-calendar-times.mr-2
+                  | Ngày kết thúc *
+                input#end_date.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  type="datetime-local",
+                  name="end_date",
+                  value=moment(discount.end_date).format('YYYY-MM-DDTHH:mm'),
+                  required,
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )
+
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-tachometer-alt.mr-2
+                  | Giới hạn sử dụng
+                input.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                  type="number",
+                  name="usage_limit",
+                  value=discount.usage_limit,
+                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                )
+
+              .form-group
+                label.block.text-sm.font-medium.text-gray-700.mb-2
+                  i.fas.fa-power-off.mr-2
+                  | Trạng thái
+                .relative
+                  select.w-full.px-3.py-2.border.rounded-lg.shadow-sm(
+                    name="status",
+                    class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  )
+                    option(value="active" selected=discount.status === 'active') Hoạt động
+                    option(value="inactive" selected=discount.status === 'inactive') Tạm dừng
+                  .absolute.inset-y-0.right-0.flex.items-center.px-2.pointer-events-none
+                    i.fas.fa-chevron-down.text-gray-400
+
+          .mt-8.flex.justify-end
+            button(
+              type="submit",
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+            )
+              i.fas.fa-save.mr-2
+              | Cập nhật Mã Giảm Giá
+
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        
+        const discountType = document.getElementById('discount_type');
+        const toggleFields = () => {
+          document.querySelectorAll('[id$="-select"], #order-amount').forEach(el => el.classList.add('hidden'));
+          document.getElementById(`${discountType.value}-select`)?.classList.remove('hidden');
+          document.getElementById('order-amount').classList.toggle('hidden', discountType.value !== 'order_amount');
+        };
+        discountType.addEventListener('change', toggleFields);
+
+        
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+        
+        startDate.addEventListener('change', () => {
+          endDate.min = startDate.value;
+          if (new Date(endDate.value) < new Date(startDate.value)) {
+            endDate.value = startDate.value;
+          }
+        });
+
+        endDate.addEventListener('change', () => {
+          if (new Date(endDate.value) < new Date(startDate.value)) {
+            endDate.value = startDate.value;
+          }
+        });
+
+        
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+          let valid = true;
+          document.querySelectorAll('[required]').forEach(input => {
+            if (!input.value.trim()) {
+              valid = false;
+              const errorMsg = input.parentElement.querySelector('.error-message');
+              errorMsg.textContent = 'Trường này là bắt buộc';
+              errorMsg.classList.remove('hidden');
+              input.classList.add('border-red-500');
+            }
+          });
+
+          if (!valid) e.preventDefault();
+        });
+
+        
+        document.querySelectorAll('input, select').forEach(element => {
+          element.addEventListener('input', () => {
+            const errorMsg = element.parentElement.querySelector('.error-message');
+            if (errorMsg) {
+              errorMsg.classList.add('hidden');
+              element.classList.remove('border-red-500');
+            }
+          });
+        });
+      });

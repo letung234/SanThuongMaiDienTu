@@ -1,0 +1,181 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  if(role.permission.includes("accounts_create"))
+    div(class="max-w-4xl mx-auto px-4 py-8")
+      h1(class="text-3xl font-bold text-gray-800 mb-6 flex items-center")
+        i(class="fas fa-user-plus mr-2 text-blue-500")
+        | Thêm mới tài khoản
+      
+      +alert-success(3000)
+      +alert-error(5000)
+
+      form(
+        action=`${prefixAdmin}/accounts/create`
+        method="POST"
+        enctype="multipart/form-data"
+        class="bg-white shadow-lg rounded-lg p-6"
+      )
+        div(class="grid grid-cols-1 md:grid-cols-2 gap-6")
+          
+          //- Full Name
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-signature mr-2 text-gray-500")
+              | Họ tên *
+            input(
+              type="text"
+              name="fullName"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Nguyễn Văn A"
+            )
+
+          //- Email
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-envelope mr-2 text-gray-500")
+              | Email *
+            input(
+              type="email"
+              name="email"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="example@domain.com"
+            )
+
+          //- Password
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-lock mr-2 text-gray-500")
+              | Mật khẩu *
+            input(
+              type="password"
+              name="password"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="••••••••"
+            )
+
+          //- Phone
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-phone mr-2 text-gray-500")
+              | Số điện thoại
+            input(
+              type="text"
+              name="phone"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="0987 654 321"
+            )
+
+          //- Role
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-user-tag mr-2 text-gray-500")
+              | Phân quyền
+            select(
+              required
+              name="role_id"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            )
+              option(disabled selected) -- Chọn --
+              each item in roles
+                option(value=item.id)= item.title
+
+          //- Status
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-power-off mr-2 text-gray-500")
+              | Trạng thái
+            div(class="mt-1 space-x-4")
+              label(class="inline-flex items-center")
+                input(
+                  type="radio"
+                  name="status"
+                  value="active"
+                  checked
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                )
+                span(class="ml-2 text-gray-700") Hoạt động
+              label(class="inline-flex items-center")
+                input(
+                  type="radio"
+                  name="status"
+                  value="inactive"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                )
+                span(class="ml-2 text-gray-700") Dừng
+
+          //- Avatar Upload
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-camera mr-2 text-gray-500")
+              | Avatar
+            div(class="mt-1 flex items-center space-x-4" upload-image)
+              div(class="relative group")
+                input(
+                  type="file"
+                  name="avatar"
+                  accept="image/*"
+                  class="hidden"
+                  id="avatar"
+                  upload-image-input
+                )
+                label(
+                  for="avatar" 
+                  class="w-28 h-28 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer border-2 border-dashed border-gray-300 hover:border-blue-500 group-hover:border-blue-500 relative"
+                )
+                  i(class="fas fa-cloud-upload-alt text-gray-400 text-xl")
+                  img(
+                    src=""
+                    class="w-full h-full rounded-full object-cover absolute top-0 left-0 hidden"
+                    upload-image-preview
+                  )
+
+
+          //- Cover Image
+          div(class="space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-image mr-2 text-gray-500")
+              | Ảnh bìa (Nhà cung cấp)
+            div(class="mt-1 relative" upload-image-cover)
+              input(
+                type="file"
+                name="cover"
+                accept="image/*"
+                class="hidden"
+                id="cover"
+                upload-image-input
+              )
+              label(
+                for="cover" 
+                class="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer border-2 border-dashed border-gray-300 hover:border-blue-500 relative"
+              )
+                i(class="fas fa-cloud-upload-alt text-gray-400 text-2xl")
+                img(
+                  src=""
+                  class="w-full h-full object-cover rounded-lg absolute top-0 left-0 hidden"
+                  upload-image-preview
+                )
+
+
+          div(class="col-span-full space-y-2")
+            label(class="block text-sm font-medium text-gray-700")
+              i(class="fas fa-align-left mr-2 text-gray-500")
+              | Mô tả (Nhà cung cấp)
+            textarea(
+              name="description"
+              rows="3"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Nhập mô tả về nhà cung cấp..."
+            )
+
+        div(class="mt-8 flex justify-end")
+          button(
+            type="submit"
+            class="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          )
+            i(class="fas fa-save mr-2")
+            | Tạo tài khoản
