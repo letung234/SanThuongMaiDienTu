@@ -174,8 +174,8 @@ Dự án được xây dựng theo hướng **Server-Side Rendering (SSR)**, s�
 ---
 
 🙏 Lời cảm ơn
-Cảm ơn bạn đã ghé thăm và dành thời gian tham khảo dự án Shopee Clone của tôi.
-Hy vọng dự án này sẽ mang lại giá trị cho bạn trong quá trình học tập và phát triển kỹ năng lập trình với React + TypeScript.
+Cảm ơn bạn đã ghé thăm và dành thời gian tham khảo dự án của tôi.
+Hy vọng dự án này sẽ mang lại giá trị cho bạn trong quá trình học tập và phát triển kỹ năng lập trình.
 Rất mong nhận được góp ý hoặc đóng góp từ bạn để dự án ngày càng hoàn thiện hơn! 💙
 
 📫 Liên hệ
